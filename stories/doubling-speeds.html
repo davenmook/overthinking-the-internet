@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doubling speeds without a shovel · Dave Noel</title>
+<meta name="description" content="A site audit, a cable configuration fix, and twice the downlink with no construction.">
+<link rel="canonical" href="https://davenoel.me/stories/doubling-speeds.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Overthinking the Internet">
+<meta property="og:title" content="Doubling speeds without a shovel · Dave Noel">
+<meta property="og:description" content="A site audit, a cable configuration fix, and twice the downlink with no construction.">
+<meta property="og:url" content="https://davenoel.me/stories/doubling-speeds.html">
+<meta property="og:image" content="https://davenoel.me/assets/img/og/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#131517">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preload" href="../assets/fonts/bricolage-grotesque-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+<header id="top"><nav class="wrap nav" aria-label="Main">
+<a class="brand" href="../"><img src="../assets/img/avatar-ring.png" alt="" width="40" height="40"><span>Overthinking the Internet</span></a>
+<div class="nav-links">
+<a href="../index.html#stories" aria-current="page">Data stories</a>
+<a href="../index.html#notes">Notes</a>
+<a href="../talks.html">Talks</a>
+<a href="../about.html">About</a>
+<a class="btn btn-primary" href="#contact">Say hi</a>
+</div>
+</nav></header>
+<main class="wrap">
+<div class="article-head">
+<div class="eyebrow">Field notes · RF</div>
+<h1>Doubling speeds <em>without a shovel.</em></h1>
+<p class="dek">The most expensive way to make a network faster is to build more of it. Sometimes the cheapest way is to read the data you already have.</p>
+<div class="byline"><img src="../assets/img/avatar-ring.png" alt="" width="36" height="36"><span>Dave Noel · 3 min read</span></div>
+</div>
+
+<article class="prose">
+<p>Early in my career I was an RF engineer at T-Mobile. When a cell site underperforms, the instinct is to reach for capital: a new site, more spectrum, more equipment. All of that takes money, permits, and months.</p>
+<p>So we started somewhere less glamorous: a site audit. Instead of looking at one bad site at a time, we lined up performance data across the market and asked a different question. What do the underperformers have in common?</p>
+
+<figure class="figure">
+<h3>Same sites, same spectrum, twice the downlink</h3>
+<p class="sub">Relative downlink performance on the affected radio designs</p>
+<div class="legend"><span><i style="background:#6B7177"></i>Before the fix</span><span><i style="background:#A9C4A1"></i>After the fix</span></div>
+<div class="chart"><svg viewBox="0 0 640 220" role="img" aria-labelledby="dl-t" style="min-width:0"><title id="dl-t">Downlink performance doubled after a cable configuration fix: before 1x, after 2x.</title>
+<line x1="40" y1="190" x2="620" y2="190" stroke="#3A3F45" stroke-width="1.5"/>
+<rect class="bar" x="150" y="110" width="110" height="80" rx="4" fill="#6B7177"><title>Before: 1x downlink</title></rect>
+<rect class="bar" x="380" y="30" width="110" height="160" rx="4" fill="#A9C4A1"><title>After: 2x downlink</title></rect>
+<text x="205" y="100" font-size="15" fill="#ECEEEF" text-anchor="middle">1×</text>
+<text x="435" y="20" font-size="15" fill="#ECEEEF" text-anchor="middle">2×</text>
+<text x="205" y="212" font-size="13" fill="#8E9499" text-anchor="middle">before</text>
+<text x="435" y="212" font-size="13" fill="#8E9499" text-anchor="middle">after</text>
+</svg></div>
+<figcaption>Illustrative of the relative change. Exact figures are internal and not shown.</figcaption>
+</figure>
+
+<h2>The pattern</h2>
+<p>The pattern turned out to be specific radio designs with a particular cabling configuration. On paper those sites had everything they needed. In practice, the way they were cabled was holding the downlink back.</p>
+<p>Changing the configuration didn't require new equipment or construction. It was a non-capital project: a crew, a plan, and the right sites in the right order.</p>
+
+<h2>The result</h2>
+<p>Downlink performance on those radio designs roughly doubled. Because the same designs were used across the region, the fix spread too, and spectral efficiency (how much data you squeeze out of the spectrum you already own) improved region-wide.</p>
+
+<blockquote>The fastest upgrade is the one that's already installed and configured wrong.</blockquote>
+
+<h2>What I took from it</h2>
+<ul>
+<li><strong>Look across, not just down.</strong> One bad site is a ticket. Fifty sites with the same bad pattern is a story.</li>
+<li><strong>Price the cheap fix first.</strong> Before asking for capital, prove you've used what you already have.</li>
+<li><strong>Tell it so people act.</strong> "These radio designs underperform because of cabling, and fixing them costs almost nothing" gets approved a lot faster than a spreadsheet of site IDs.</li>
+</ul>
+</article>
+
+<section class="next" aria-label="More stories">
+<a class="talk" href="why-customers-leave.html"><span class="meta">NEXT · DATA STORY</span><span class="title">Why do people really leave their internet provider?</span><p>Speed is only part of it.</p></a>
+<a class="talk" href="the-data-that-isnt-there.html"><span class="meta">NEXT · IN PROGRESS</span><span class="title">The data that isn't there</span><p>When Hurricane Beryl hit Houston, did the internet notice?</p></a>
+</section>
+</main>
+<footer class="footer" id="contact">
+<div class="wrap footer-top">
+<div class="footer-cta">
+<strong>Want to talk data, networks, mentoring, or customer success? Say hi.</strong>
+<span class="email">davidnmook@gmail.com</span>
+<small>I'll probably overthink my reply.</small>
+</div>
+<div class="footer-links">
+<a href="https://www.linkedin.com/in/noeldave">LinkedIn</a>
+<a href="https://github.com/davenmook">GitHub</a>
+<a href="../about.html">About</a>
+<a href="#top">Back to top</a>
+</div>
+</div>
+<div class="wrap footer-fine">© 2026 Dave Noel · Views are my own · Data from public sources, credited on every chart.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why do people really leave their internet provider? · Dave Noel</title>
+<meta name="description" content="Speed is only part of it. Latency, consistency, and fiber tell the rest of the story.">
+<link rel="canonical" href="https://davenoel.me/stories/why-customers-leave.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Overthinking the Internet">
+<meta property="og:title" content="Why do people really leave their internet provider? · Dave Noel">
+<meta property="og:description" content="Speed is only part of it. Latency, consistency, and fiber tell the rest of the story.">
+<meta property="og:url" content="https://davenoel.me/stories/why-customers-leave.html">
+<meta property="og:image" content="https://davenoel.me/assets/img/og/og-churn.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#131517">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preload" href="../assets/fonts/bricolage-grotesque-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+<header id="top"><nav class="wrap nav" aria-label="Main">
+<a class="brand" href="../"><img src="../assets/img/avatar-ring.png" alt="" width="40" height="40"><span>Overthinking the Internet</span></a>
+<div class="nav-links">
+<a href="../index.html#stories" aria-current="page">Data stories</a>
+<a href="../index.html#notes">Notes</a>
+<a href="../talks.html">Talks</a>
+<a href="../about.html">About</a>
+<a class="btn btn-primary" href="#contact">Say hi</a>
+</div>
+</nav></header>
+<main class="wrap">
+<div class="article-head">
+<div class="eyebrow">Data story · Broadband</div>
+<h1>Why do people really leave their <em>internet provider?</em></h1>
+<p class="dek">Everyone assumed the answer was speed. The data said speed was only part of it, and the rest was hiding in latency, consistency, and how people feel about fiber.</p>
+<div class="byline"><img src="../assets/img/avatar-ring.png" alt="" width="36" height="36"><span>Dave Noel · 6 min read</span></div>
+</div>
+
+<article class="prose">
+<h2>The question</h2>
+<p>Every internet provider wants to know why customers leave. The easy answer is "the other guy is faster." It's easy because you can measure it. Run a speed test, compare the numbers, done.</p>
+<p>I wanted to know if that was actually true, or just the answer that's easiest to count. Is it performance? Is it price, customer service, or how consistent the connection feels on a Tuesday night when everyone in the house is streaming? So I went looking for the parts of the experience that don't show up in a headline speed number.</p>
+
+<h2>The plan</h2>
+<p>Crowdsourced network data lets you look at the experience from the user's side instead of the network's side. Millions of people run speed tests on their own devices, in their own homes, on their own schedule. That gives you three kinds of evidence:</p>
+<ul>
+<li><strong>Quality of service:</strong> the classic numbers, like download, upload, and latency.</li>
+<li><strong>Quality of experience:</strong> what using the internet feels like. How long a web page takes to load, how long before a video starts, how laggy a video call is.</li>
+<li><strong>Sentiment:</strong> how people rate their provider and whether they'd recommend it (Net Promoter Score, or NPS).</li>
+</ul>
+<p>Then I lined those up against which providers were gaining and losing customers.</p>
+
+<h2>First clue: the fastest isn't the whole story</h2>
+<p>Comparing the US provider with the most low-latency connections against a major competitor, the speed gap was real but modest. The gap in how people felt about them was enormous.</p>
+
+<figure class="figure">
+<h3>A 32% speed gap, a 36.5-point sentiment gap</h3>
+<p class="sub">The provider with the most low-latency connections vs. a major competitor, US, Q4 2024</p>
+<div class="legend"><span><i style="background:#A9C4A1"></i>Provider with the most low-latency connections</span><span><i style="background:#6B7177"></i>Major competitor</span></div>
+<div class="kpis">
+<div class="kpi"><div class="k">Median download</div><div class="v"><span class="a">323</span><span class="vs">vs</span><span class="b">245</span></div><div class="k">Mbps</div></div>
+<div class="kpi"><div class="k">Customer rating</div><div class="v"><span class="a">3.84</span><span class="vs">vs</span><span class="b">3.17</span></div><div class="k">out of 5</div></div>
+<div class="kpi"><div class="k">Net Promoter Score</div><div class="v"><span class="a">+20</span><span class="vs">vs</span><span class="b">−16.5</span></div><div class="k">−100 to +100</div></div>
+<div class="kpi"><div class="k">Web page load</div><div class="v"><span class="a">1,120</span><span class="vs">vs</span><span class="b">1,351</span></div><div class="k">ms, lower is better</div></div>
+<div class="kpi"><div class="k">Video start time</div><div class="v"><span class="a">1,474</span><span class="vs">vs</span><span class="b">1,758</span></div><div class="k">ms, lower is better</div></div>
+<div class="kpi"><div class="k">Video call latency</div><div class="v"><span class="a">51.6</span><span class="vs">vs</span><span class="b">79.4</span></div><div class="k">ms, lower is better</div></div>
+</div>
+<figcaption>Data: Ookla Speedtest Intelligence and Consumer QoE, Q4 2024, as presented in the public webinar "Why Customers Leave: Preventing Churn" (2025).</figcaption>
+</figure>
+
+<p>A 32% speed advantage doesn't explain a swing from −16.5 to +20 on its own. Nobody feels megabits. What you feel is the page that hangs for half a second, or the lag on a video call with your boss.</p>
+
+<h2>Second clue: fiber shows up everywhere</h2>
+<p>Next I compared fiber providers with non-fiber providers city by city. Fiber was faster. Shocking, I know! But the gap that lined up most cleanly with how people felt wasn't download speed. It was latency.</p>
+
+<figure class="figure">
+<h3>Fiber providers have higher NPS in every city</h3>
+<p class="sub">Net Promoter Score, fiber vs. non-fiber providers, Q4 2024</p>
+<div class="legend"><span><i style="background:#A9C4A1"></i>Fiber</span><span><i style="background:#6B7177"></i>Non-fiber</span></div>
+<div class="chart"><svg viewBox="0 0 720 346" role="img" aria-labelledby="nps-t"><title id="nps-t">Net Promoter Score for fiber and non-fiber providers in five cities. Fiber leads in every city.</title>
+<line x1="173.8" y1="18" x2="173.8" y2="322" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="173.8" y="340" font-size="12" fill="#8E9499" text-anchor="middle">−80</text>
+<line x1="349.2" y1="18" x2="349.2" y2="322" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="349.2" y="340" font-size="12" fill="#8E9499" text-anchor="middle">−40</text>
+<line x1="524.6" y1="18" x2="524.6" y2="322" stroke="#3A3F45" stroke-width="1.5" />
+<text x="524.6" y="340" font-size="12" fill="#8E9499" text-anchor="middle">0</text>
+<line x1="700.0" y1="18" x2="700.0" y2="322" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="700.0" y="340" font-size="12" fill="#8E9499" text-anchor="middle">+40</text>
+<text x="0" y="50" font-size="13" fill="#ECEEEF">Atlanta</text>
+<rect class="bar" x="524.6" y="32" width="34.8" height="16" rx="4" fill="#A9C4A1"><title>Atlanta, Fiber: NPS 7.93</title></rect>
+<text x="565.4" y="44.5" font-size="12" fill="#ECEEEF" text-anchor="start">+7.9</text>
+<rect class="bar" x="317.4" y="52" width="207.2" height="16" rx="4" fill="#6B7177"><title>Atlanta, Non-fiber: NPS −47.26</title></rect>
+<text x="311.4" y="64.5" font-size="12" fill="#ECEEEF" text-anchor="end">−47.3</text>
+<text x="0" y="108" font-size="13" fill="#ECEEEF">Houston</text>
+<rect class="bar" x="524.6" y="90" width="121.8" height="16" rx="4" fill="#A9C4A1"><title>Houston, Fiber: NPS 27.78</title></rect>
+<text x="652.4" y="102.5" font-size="12" fill="#ECEEEF" text-anchor="start">+27.8</text>
+<rect class="bar" x="276.6" y="110" width="248.0" height="16" rx="4" fill="#6B7177"><title>Houston, Non-fiber: NPS −56.56</title></rect>
+<text x="270.6" y="122.5" font-size="12" fill="#ECEEEF" text-anchor="end">−56.6</text>
+<text x="0" y="166" font-size="13" fill="#ECEEEF">Los Angeles</text>
+<rect class="bar" x="524.6" y="148" width="4.0" height="16" rx="4" fill="#A9C4A1"><title>Los Angeles, Fiber: NPS 0.92</title></rect>
+<text x="534.6" y="160.5" font-size="12" fill="#ECEEEF" text-anchor="start">+0.9</text>
+<rect class="bar" x="232.8" y="168" width="291.8" height="16" rx="4" fill="#6B7177"><title>Los Angeles, Non-fiber: NPS −66.56</title></rect>
+<text x="226.8" y="180.5" font-size="12" fill="#ECEEEF" text-anchor="end">−66.6</text>
+<text x="0" y="224" font-size="13" fill="#ECEEEF">Philadelphia</text>
+<rect class="bar" x="506.4" y="206" width="18.2" height="16" rx="4" fill="#A9C4A1"><title>Philadelphia, Fiber: NPS −4.16</title></rect>
+<text x="500.4" y="218.5" font-size="12" fill="#ECEEEF" text-anchor="end">−4.2</text>
+<rect class="bar" x="349.2" y="226" width="175.4" height="16" rx="4" fill="#6B7177"><title>Philadelphia, Non-fiber: NPS −40.00</title></rect>
+<text x="343.2" y="238.5" font-size="12" fill="#ECEEEF" text-anchor="end">−40.0</text>
+<text x="0" y="282" font-size="13" fill="#ECEEEF">Seattle</text>
+<rect class="bar" x="524.6" y="264" width="138.7" height="16" rx="4" fill="#A9C4A1"><title>Seattle, Fiber: NPS 31.63</title></rect>
+<text x="669.3" y="276.5" font-size="12" fill="#ECEEEF" text-anchor="start">+31.6</text>
+<rect class="bar" x="173.8" y="284" width="350.8" height="16" rx="4" fill="#6B7177"><title>Seattle, Non-fiber: NPS −80.00</title></rect>
+<text x="167.8" y="296.5" font-size="12" fill="#ECEEEF" text-anchor="end">−80.0</text>
+</svg></div>
+<figcaption>Data: Ookla Speedtest Intelligence, Q4 2024, as presented in the public webinar "Why Customers Leave: Preventing Churn" (2025).</figcaption>
+</figure>
+
+<figure class="figure">
+<h3>And their connections respond 3 to 15 times faster</h3>
+<p class="sub">Latency in milliseconds, lower is better, Q4 2024</p>
+<div class="legend"><span><i style="background:#A9C4A1"></i>Fiber</span><span><i style="background:#6B7177"></i>Non-fiber</span></div>
+<div class="chart"><svg viewBox="0 0 720 346" role="img" aria-labelledby="lat-t"><title id="lat-t">Latency in milliseconds for fiber and non-fiber providers in five cities. Fiber is 4 to 7 ms; non-fiber is 24 to 60 ms.</title>
+<line x1="130.0" y1="18" x2="130.0" y2="322" stroke="#3A3F45" stroke-width="1.5" />
+<text x="130.0" y="340" font-size="12" fill="#8E9499" text-anchor="middle">0 ms</text>
+<line x1="299.2" y1="18" x2="299.2" y2="322" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="299.2" y="340" font-size="12" fill="#8E9499" text-anchor="middle">20 ms</text>
+<line x1="468.5" y1="18" x2="468.5" y2="322" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="468.5" y="340" font-size="12" fill="#8E9499" text-anchor="middle">40 ms</text>
+<line x1="637.7" y1="18" x2="637.7" y2="322" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="637.7" y="340" font-size="12" fill="#8E9499" text-anchor="middle">60 ms</text>
+<text x="0" y="50" font-size="13" fill="#ECEEEF">Atlanta</text>
+<rect class="bar" x="130" y="32" width="42.3" height="16" rx="4" fill="#A9C4A1"><title>Atlanta, Fiber: 5 ms latency</title></rect>
+<text x="178.3" y="44.5" font-size="12" fill="#ECEEEF">5 ms</text>
+<rect class="bar" x="130" y="52" width="211.5" height="16" rx="4" fill="#6B7177"><title>Atlanta, Non-fiber: 25 ms latency</title></rect>
+<text x="347.5" y="64.5" font-size="12" fill="#ECEEEF">25 ms</text>
+<text x="0" y="108" font-size="13" fill="#ECEEEF">Houston</text>
+<rect class="bar" x="130" y="90" width="33.8" height="16" rx="4" fill="#A9C4A1"><title>Houston, Fiber: 4 ms latency</title></rect>
+<text x="169.8" y="102.5" font-size="12" fill="#ECEEEF">4 ms</text>
+<rect class="bar" x="130" y="110" width="211.5" height="16" rx="4" fill="#6B7177"><title>Houston, Non-fiber: 25 ms latency</title></rect>
+<text x="347.5" y="122.5" font-size="12" fill="#ECEEEF">25 ms</text>
+<text x="0" y="166" font-size="13" fill="#ECEEEF">Los Angeles</text>
+<rect class="bar" x="130" y="148" width="59.2" height="16" rx="4" fill="#A9C4A1"><title>Los Angeles, Fiber: 7 ms latency</title></rect>
+<text x="195.2" y="160.5" font-size="12" fill="#ECEEEF">7 ms</text>
+<rect class="bar" x="130" y="168" width="203.1" height="16" rx="4" fill="#6B7177"><title>Los Angeles, Non-fiber: 24 ms latency</title></rect>
+<text x="339.1" y="180.5" font-size="12" fill="#ECEEEF">24 ms</text>
+<text x="0" y="224" font-size="13" fill="#ECEEEF">Philadelphia</text>
+<rect class="bar" x="130" y="206" width="59.2" height="16" rx="4" fill="#A9C4A1"><title>Philadelphia, Fiber: 7 ms latency</title></rect>
+<text x="195.2" y="218.5" font-size="12" fill="#ECEEEF">7 ms</text>
+<rect class="bar" x="130" y="226" width="414.6" height="16" rx="4" fill="#6B7177"><title>Philadelphia, Non-fiber: 49 ms latency</title></rect>
+<text x="550.6" y="238.5" font-size="12" fill="#ECEEEF">49 ms</text>
+<text x="0" y="282" font-size="13" fill="#ECEEEF">Seattle</text>
+<rect class="bar" x="130" y="264" width="33.8" height="16" rx="4" fill="#A9C4A1"><title>Seattle, Fiber: 4 ms latency</title></rect>
+<text x="169.8" y="276.5" font-size="12" fill="#ECEEEF">4 ms</text>
+<rect class="bar" x="130" y="284" width="507.7" height="16" rx="4" fill="#6B7177"><title>Seattle, Non-fiber: 60 ms latency</title></rect>
+<text x="643.7" y="296.5" font-size="12" fill="#ECEEEF">60 ms</text>
+</svg></div>
+<figcaption>Data: Ookla Speedtest Intelligence, Q4 2024, as presented in the public webinar "Why Customers Leave: Preventing Churn" (2025).</figcaption>
+<details class="table-view"><summary>See all the numbers</summary><div class="scroll"><table class="data"><thead><tr><th>City (fiber / non-fiber)</th><th>Download Mbps</th><th>Upload Mbps</th><th>Latency ms</th><th>Rating 1–5</th><th>NPS</th></tr></thead><tbody><tr><td>Atlanta</td><td>346.7 / 47.5</td><td>270.4 / 10.5</td><td>5 / 25</td><td>3.70 / 2.50</td><td>7.93 / −47.26</td></tr><tr><td>Houston</td><td>477.0 / 44.8</td><td>392.0 / 11.8</td><td>4 / 25</td><td>3.80 / 2.40</td><td>27.78 / −56.56</td></tr><tr><td>Los Angeles</td><td>317.7 / 42.9</td><td>261.0 / 11.0</td><td>7 / 24</td><td>3.60 / 2.40</td><td>0.92 / −66.56</td></tr><tr><td>Philadelphia</td><td>288.4 / 83.9</td><td>176.0 / 25.9</td><td>7 / 49</td><td>3.50 / 4.00</td><td>−4.16 / −40.00</td></tr><tr><td>Seattle</td><td>302.7 / 81.3</td><td>260.6 / 17.8</td><td>4 / 60</td><td>4.10 / 2.10</td><td>31.63 / −80.00</td></tr></tbody></table></div></details>
+</figure>
+
+<p>Then the movement data closed the loop. Tracking which providers were gaining and losing users quarter by quarter, the operators investing fastest in fiber were the ones gaining and keeping customers in Houston, Los Angeles, Philadelphia, and Seattle.</p>
+
+<h2>The part where I overthink it</h2>
+<p>Here's the trap: "fiber providers have happier customers, so fiber makes customers happy." Maybe. But fiber providers also tend to be newer in a market, price differently, and run different marketing. The data shows these things move together. It doesn't prove one causes the other.</p>
+<p>And there's a wrinkle that keeps me honest. Look at Philadelphia in the full table: non-fiber customers there gave their provider a <strong>higher</strong> star rating than fiber customers did, 4.0 vs 3.5. Yet the non-fiber NPS was still far lower. Ratings and recommendations are measuring different things. If you only looked at one, you'd tell yourself the wrong story.</p>
+<blockquote>"Who's fastest?" is the easy question. The useful one is where the experience breaks, and whether anyone notices.</blockquote>
+<p>That's why you need several kinds of evidence pointing the same way before you act: performance, experience, sentiment, and actual customer movement. One metric on its own is a guess. When four of them agree, you've got a story worth telling.</p>
+
+<h2>What happened next</h2>
+<p>Stories like this one change decisions. Analysis built on this approach helped drive a dramatic shift in how one provider marketed and packaged its services. The useful part was seeing what customers were actually reacting to, and it turned out to be a lot more than speed.</p>
+
+<div class="callout">
+<span class="eyebrow">Watch the full talk</span>
+<p>I walked through this analysis in the webinar <a href="https://www.ookla.com/resources/webinars/why-customers-leave-preventing-churn">Why Customers Leave: Preventing Churn</a>, including how we tracked where users move when they switch providers.</p>
+</div>
+</article>
+
+<section class="next" aria-label="More stories">
+<a class="talk" href="the-data-that-isnt-there.html"><span class="meta">NEXT · IN PROGRESS</span><span class="title">The data that isn't there</span><p>When Hurricane Beryl hit Houston, did the internet notice?</p></a>
+<a class="talk" href="doubling-speeds.html"><span class="meta">NEXT · FIELD NOTES</span><span class="title">Doubling speeds without a shovel</span><p>A site audit, a cable fix, and twice the downlink.</p></a>
+</section>
+</main>
+<footer class="footer" id="contact">
+<div class="wrap footer-top">
+<div class="footer-cta">
+<strong>Want to talk data, networks, mentoring, or customer success? Say hi.</strong>
+<span class="email">davidnmook@gmail.com</span>
+<small>I'll probably overthink my reply.</small>
+</div>
+<div class="footer-links">
+<a href="https://www.linkedin.com/in/noeldave">LinkedIn</a>
+<a href="https://github.com/davenmook">GitHub</a>
+<a href="../about.html">About</a>
+<a href="#top">Back to top</a>
+</div>
+</div>
+<div class="wrap footer-fine">© 2026 Dave Noel · Views are my own · Data from public sources, credited on every chart.</div>
+</footer>
+</body>
+</html>

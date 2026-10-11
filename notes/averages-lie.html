@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Averages lie · Dave Noel</title>
+<meta name="description" content="Why the median tells you more about your internet speed than the mean ever will.">
+<link rel="canonical" href="https://davenoel.me/notes/averages-lie.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Overthinking the Internet">
+<meta property="og:title" content="Averages lie · Dave Noel">
+<meta property="og:description" content="Why the median tells you more about your internet speed than the mean ever will.">
+<meta property="og:url" content="https://davenoel.me/notes/averages-lie.html">
+<meta property="og:image" content="https://davenoel.me/assets/img/og/og-averages-lie.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#131517">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preload" href="../assets/fonts/bricolage-grotesque-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+<header id="top"><nav class="wrap nav" aria-label="Main">
+<a class="brand" href="../"><img src="../assets/img/avatar-ring.png" alt="" width="40" height="40"><span>Overthinking the Internet</span></a>
+<div class="nav-links">
+<a href="../index.html#stories">Data stories</a>
+<a href="../index.html#notes" aria-current="page">Notes</a>
+<a href="../talks.html">Talks</a>
+<a href="../about.html">About</a>
+<a class="btn btn-primary" href="#contact">Say hi</a>
+</div>
+</nav></header>
+<main class="wrap">
+<div class="article-head">
+<div class="eyebrow">Notes · Data quality</div>
+<h1>Averages <em>lie.</em></h1>
+<p class="dek">Why the median tells you more about your internet speed than the mean ever will.</p>
+<div class="byline"><img src="../assets/img/avatar-ring.png" alt="" width="36" height="36"><span>Dave Noel · 4 min read</span></div>
+</div>
+
+<article class="prose">
+<p>If you want your internet to sound faster than it is, report the average. Most people won't notice.</p>
+<p>Say ten households on the same street run a speed test. Nine of them get 50 Mbps. One just got gigabit fiber and gets 1,000 Mbps.</p>
+
+<figure class="figure">
+<h3>One household moves the average, nobody else gets faster</h3>
+<p class="sub">Download speed of ten households on one street (a made-up example), Mbps</p>
+<div class="legend"><span><i style="background:#6B7177"></i>Nine households at 50 Mbps</span><span><i style="background:#33A6B8"></i>One gigabit household</span></div>
+<div class="chart"><svg viewBox="0 0 720 190" role="img" aria-labelledby="st-t"><title id="st-t">Ten households: nine at 50 Mbps and one at 1,000 Mbps. The median is 50 Mbps; the mean is 145 Mbps.</title>
+<line x1="40" y1="160" x2="680" y2="160" stroke="#3A3F45" stroke-width="1.5"/>
+<text x="40.0" y="182" font-size="12" fill="#8E9499" text-anchor="middle">0</text><text x="200.0" y="182" font-size="12" fill="#8E9499" text-anchor="middle">250</text><text x="360.0" y="182" font-size="12" fill="#8E9499" text-anchor="middle">500</text><text x="520.0" y="182" font-size="12" fill="#8E9499" text-anchor="middle">750</text><text x="680.0" y="182" font-size="12" fill="#8E9499" text-anchor="middle">1,000</text>
+<text x="680" y="182" dy="0" font-size="12" fill="#8E9499" text-anchor="end" dx="0"></text>
+
+
+<line x1="72.0" y1="10" x2="72.0" y2="160" stroke="#ECEEEF" stroke-width="2" stroke-dasharray="4 4"/>
+<text x="80.0" y="22" font-size="13" fill="#ECEEEF">median 50 Mbps</text>
+<line x1="132.8" y1="40" x2="132.8" y2="160" stroke="#A9C4A1" stroke-width="2"/>
+<text x="140.8" y="52" font-size="13" fill="#A9C4A1">mean 145 Mbps</text>
+<text x="680.0" y="128" font-size="12" fill="#8E9499" text-anchor="end">the new gigabit house</text>
+<circle class="bar" cx="72.0" cy="150" r="6" fill="#6B7177"><title>Household 1: 50 Mbps</title></circle><circle class="bar" cx="72.0" cy="136" r="6" fill="#6B7177"><title>Household 2: 50 Mbps</title></circle><circle class="bar" cx="72.0" cy="122" r="6" fill="#6B7177"><title>Household 3: 50 Mbps</title></circle><circle class="bar" cx="72.0" cy="108" r="6" fill="#6B7177"><title>Household 4: 50 Mbps</title></circle><circle class="bar" cx="72.0" cy="94" r="6" fill="#6B7177"><title>Household 5: 50 Mbps</title></circle><circle class="bar" cx="72.0" cy="80" r="6" fill="#6B7177"><title>Household 6: 50 Mbps</title></circle><circle class="bar" cx="72.0" cy="66" r="6" fill="#6B7177"><title>Household 7: 50 Mbps</title></circle><circle class="bar" cx="72.0" cy="52" r="6" fill="#6B7177"><title>Household 8: 50 Mbps</title></circle><circle class="bar" cx="72.0" cy="38" r="6" fill="#6B7177"><title>Household 9: 50 Mbps</title></circle><circle class="bar" cx="680.0" cy="150" r="6" fill="#33A6B8"><title>Household 10: 1,000 Mbps (new gigabit fiber)</title></circle></svg></div>
+<figcaption>Mean = (9 × 50 + 1,000) ÷ 10 = 145 Mbps. Median = the middle value = 50 Mbps.</figcaption>
+</figure>
+
+<p>Which number describes that street? Nine out of ten neighbors would laugh at 145. One household nearly tripled the average, and nobody else's internet got a bit faster.</p>
+<p>That's how averages behave when data is lopsided, and internet speeds are very lopsided. Most connections sit in a crowd near the middle, and a smaller group of very fast ones stretches way out to the right. Statisticians call that a right-skewed distribution. I call it the reason I don't trust a headline average speed.</p>
+
+<h2>The math is fine. The question is wrong.</h2>
+<p>The average is correct math. It just answers a different question than most people are asking. Total speed divided by everyone is the mean. What a typical person gets is the median. When someone says "the average customer," they almost always mean the second one.</p>
+<p>Where this bites in real life:</p>
+<ul>
+<li><strong>Coverage reports.</strong> A county can look great because of one city, while the rural half of the county lives at the slow end.</li>
+<li><strong>Before and after.</strong> Upgrade a handful of power users and the average jumps, even if almost everyone else sees nothing.</li>
+<li><strong>Customer conversations.</strong> Signal strength (RSSI or RSRP) does this all the time. A handful of readings taken right under a tower can pull the average up, and a few from deep inside a building can drag it down. What we need to show is the most common experience for the user, not a few extreme readings at either end.</li>
+</ul>
+<p>Most serious speed reporting leans on medians for exactly this reason.</p>
+
+<h2>What I do instead</h2>
+<ol>
+<li><strong>Lead with the median.</strong> It's the closest thing to "what a normal person gets."</li>
+<li><strong>Show the spread.</strong> A median plus the 10th and 90th percentiles tells you what the slow end, the middle and the fast end look like.</li>
+<li><strong>Plot it when it matters.</strong> One histogram ends most arguments.</li>
+</ol>
+<p>If you like this kind of thing, David Spiegelhalter's <em>The Art of Statistics</em> is a great read on how summaries can mislead.</p>
+<p>So next time someone hands you an average speed, ask for the median. And if they ask why, scream "averages lie!" at the top of your lungs, or just send them this.</p>
+
+<div class="callout">
+<span class="eyebrow">Coming next</span>
+<p>I'm running this on real public data, mean vs. median download speed for every Texas county. Follow along on <a href="https://github.com/davenmook">GitHub</a>.</p>
+</div>
+</article>
+
+<section class="next" aria-label="More notes">
+<a class="talk" href="i-was-a-terrible-student.html"><span class="meta">NEXT · MENTORING</span><span class="title">I was a terrible student</span><p>Remedial math, three tries at Circuits 1, and what failing taught me.</p></a>
+<a class="talk" href="what-a-csm-does.html"><span class="meta">NEXT · CUSTOMER LIFE</span><span class="title">What a CSM actually does all day</span><p>Not sales, not support, and definitely not FarmVille.</p></a>
+</section>
+</main>
+<footer class="footer" id="contact">
+<div class="wrap footer-top">
+<div class="footer-cta">
+<strong>Want to talk data, networks, mentoring, or customer success? Say hi.</strong>
+<span class="email">davidnmook@gmail.com</span>
+<small>I'll probably overthink my reply.</small>
+</div>
+<div class="footer-links">
+<a href="https://www.linkedin.com/in/noeldave">LinkedIn</a>
+<a href="https://github.com/davenmook">GitHub</a>
+<a href="../about.html">About</a>
+<a href="#top">Back to top</a>
+</div>
+</div>
+<div class="wrap footer-fine">© 2026 Dave Noel · Views are my own · Data from public sources, credited on every chart.</div>
+</footer>
+</body>
+</html>

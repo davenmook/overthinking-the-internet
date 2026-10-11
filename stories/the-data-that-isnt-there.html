@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The data that isn't there · Dave Noel</title>
+<meta name="description" content="When Hurricane Beryl knocked out power in Houston, did the internet notice?">
+<link rel="canonical" href="https://davenoel.me/stories/the-data-that-isnt-there.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Overthinking the Internet">
+<meta property="og:title" content="The data that isn't there · Dave Noel">
+<meta property="og:description" content="When Hurricane Beryl knocked out power in Houston, did the internet notice?">
+<meta property="og:url" content="https://davenoel.me/stories/the-data-that-isnt-there.html">
+<meta property="og:image" content="https://davenoel.me/assets/img/og/og-beryl.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#131517">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preload" href="../assets/fonts/bricolage-grotesque-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+<header id="top"><nav class="wrap nav" aria-label="Main">
+<a class="brand" href="../"><img src="../assets/img/avatar-ring.png" alt="" width="40" height="40"><span>Overthinking the Internet</span></a>
+<div class="nav-links">
+<a href="../index.html#stories" aria-current="page">Data stories</a>
+<a href="../index.html#notes">Notes</a>
+<a href="../talks.html">Talks</a>
+<a href="../about.html">About</a>
+<a class="btn btn-primary" href="#contact">Say hi</a>
+</div>
+</nav></header>
+<main class="wrap">
+<div class="article-head">
+<span class="status">In progress</span>
+<h1>The data that <em>isn't there.</em></h1>
+<p class="dek">In July 2024, Hurricane Beryl knocked out power across the Houston area. I live here. I want to know: did the internet notice, and can public data show it?</p>
+<div class="byline"><img src="../assets/img/avatar-ring.png" alt="" width="36" height="36"><span>Dave Noel · working in public on GitHub</span></div>
+</div>
+
+<article class="prose">
+<h2>The question</h2>
+<p>Most data stories start with what's in the dataset. This one starts with what's missing. When the power goes out, people stop running speed tests, phones stop streaming, and home routers go dark. The absence of data becomes a signal of its own.</p>
+<p>The question I'm chasing: <strong>using only public data, can you see where and when an outage hit, and how quickly connectivity came back?</strong></p>
+
+<h2>The plan</h2>
+<ul>
+<li><strong>Internet outage signals</strong> from IODA, Georgia Tech's Internet Outage Detection and Analysis project, which tracks regional connectivity in near real time.</li>
+<li><strong>Cell site outage reports</strong> from the FCC's Disaster Information Reporting System, which publishes the share of cell sites out of service by county during major storms.</li>
+<li><strong>Storm records</strong> from NOAA's Storm Events database, for the when and where.</li>
+<li><strong>Speed test counts</strong> from Ookla's open data, as a second check. It comes in quarterly tiles, so a storm that lasted days may get averaged away. Finding out is part of the fun.</li>
+</ul>
+
+<h2>How I'll keep myself honest</h2>
+<p>July is also peak summer travel in Houston, so fewer tests could just mean fewer people in town. I'll compare the same quarters in a year without a major storm before claiming anything. If the signal isn't there, that's the story, and I'll write it up that way.</p>
+
+<div class="callout">
+<span class="eyebrow">Follow along</span>
+<p>The code, data sources, and notes are going up on <a href="https://github.com/davenmook">GitHub</a> as I work. This page will become the full story when the analysis is done.</p>
+</div>
+</article>
+
+<section class="next" aria-label="More stories">
+<a class="talk" href="why-customers-leave.html"><span class="meta">READ NOW · DATA STORY</span><span class="title">Why do people really leave their internet provider?</span><p>Speed is only part of it.</p></a>
+<a class="talk" href="doubling-speeds.html"><span class="meta">READ NOW · FIELD NOTES</span><span class="title">Doubling speeds without a shovel</span><p>A site audit, a cable fix, and twice the downlink.</p></a>
+</section>
+</main>
+<footer class="footer" id="contact">
+<div class="wrap footer-top">
+<div class="footer-cta">
+<strong>Want to talk data, networks, mentoring, or customer success? Say hi.</strong>
+<span class="email">davidnmook@gmail.com</span>
+<small>I'll probably overthink my reply.</small>
+</div>
+<div class="footer-links">
+<a href="https://www.linkedin.com/in/noeldave">LinkedIn</a>
+<a href="https://github.com/davenmook">GitHub</a>
+<a href="../about.html">About</a>
+<a href="#top">Back to top</a>
+</div>
+</div>
+<div class="wrap footer-fine">© 2026 Dave Noel · Views are my own · Data from public sources, credited on every chart.</div>
+</footer>
+</body>
+</html>
