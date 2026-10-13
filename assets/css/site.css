@@ -225,3 +225,12 @@ details.table-view .scroll { overflow-x: auto; margin-top: 10px; }
 @keyframes pct-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.35); } }
 .pct-replay { margin-top: 12px; font-family: var(--mono); font-size: 12px; color: var(--sage); background: none; border: 1px solid var(--line-2); border-radius: 6px; padding: 5px 12px; cursor: pointer; }
 .pct-replay:hover { border-color: var(--sage); }
+
+/* Code syntax colors (site palette) */
+.prose pre.code { position: relative; padding-top: 30px; }
+.prose pre.code::before { content: attr(data-lang); position: absolute; top: 9px; right: 14px; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.tk-k { color: var(--teal); }
+.tk-f { color: var(--sage); }
+.tk-s { color: var(--sage-hi); }
+.tk-n { color: #E6C07B; }
+.tk-p { color: var(--muted); }

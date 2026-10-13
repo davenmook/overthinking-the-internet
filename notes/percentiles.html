@@ -189,12 +189,12 @@
 
 <h2>How I pull it</h2>
 <p>It's one line in SQL:</p>
-<pre><code>select
-  percentile_cont(0.5) within group (order by download_mbps) as median_mbps,
-  percentile_cont(0.1) within group (order by download_mbps) as p10_mbps
-from speed_tests;</code></pre>
+<pre class="code" data-lang="SQL"><code><span class="tk-k">select</span>
+  <span class="tk-f">percentile_cont</span><span class="tk-p">(</span><span class="tk-n">0.5</span><span class="tk-p">)</span> <span class="tk-k">within group</span> <span class="tk-p">(</span><span class="tk-k">order by</span> download_mbps<span class="tk-p">)</span> <span class="tk-k">as</span> median_mbps<span class="tk-p">,</span>
+  <span class="tk-f">percentile_cont</span><span class="tk-p">(</span><span class="tk-n">0.1</span><span class="tk-p">)</span> <span class="tk-k">within group</span> <span class="tk-p">(</span><span class="tk-k">order by</span> download_mbps<span class="tk-p">)</span> <span class="tk-k">as</span> p10_mbps
+<span class="tk-k">from</span> speed_tests<span class="tk-p">;</span></code></pre>
 <p>And in pandas:</p>
-<pre><code>df["download_mbps"].quantile([0.1, 0.5])</code></pre>
+<pre class="code" data-lang="Python"><code>df<span class="tk-p">[</span><span class="tk-s">"download_mbps"</span><span class="tk-p">]</span><span class="tk-p">.</span><span class="tk-f">quantile</span><span class="tk-p">([</span><span class="tk-n">0.1</span><span class="tk-p">,</span> <span class="tk-n">0.5</span><span class="tk-p">])</span></code></pre>
 <p>(When should someone use SQL or Python? Coming to a theater near you!)</p>
 <p>These days the 10th percentile sits right next to the median whenever I share speeds. If the gap between them is big, that gap is usually the story.</p>
 <p>The median tells you how most people are doing. The 10th percentile tells you who's suffering. I report both.</p>
