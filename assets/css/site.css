@@ -203,3 +203,25 @@ details.table-view .scroll { overflow-x: auto; margin-top: 10px; }
 .next { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; padding-bottom: 80px; }
 .notes-list a.title { color: var(--fg); text-decoration: none; }
 .notes-list a.title:hover { color: var(--sage); }
+
+/* Code blocks in notes */
+.prose pre { margin-top: 1.1em; padding: 16px 18px; border-radius: 10px; background: var(--raise); border: 1px solid var(--line); overflow-x: auto; }
+.prose pre code { font-family: var(--mono); font-size: 13.5px; line-height: 1.6; color: var(--fg); white-space: pre; }
+.prose table.data { margin-top: 1.4em; }
+
+/* Percentiles chart animation (runs only when JS adds .pct-wait; reduced motion keeps it static) */
+.pct-anim .pct-dot, .pct-anim .pct-ring { transform-box: fill-box; transform-origin: center; }
+.pct-wait .pct-dot, .pct-wait .pct-band, .pct-wait .pct-ring, .pct-wait .pct-note, .pct-wait .pct-ends { opacity: 0; }
+.pct-play .pct-ends { animation: pct-fade .5s ease-out forwards; }
+.pct-play .pct-dot { animation: pct-pop .38s cubic-bezier(.3,1.5,.6,1) forwards; animation-delay: calc(var(--i) * 16ms); }
+.pct-play .pct-band { animation: pct-fade .6s ease-out 1.9s forwards; }
+.pct-play .pct-ring-p10 { animation: pct-fade .3s ease-out 2.2s forwards, pct-pulse 1.1s ease-in-out 2.5s 3; }
+.pct-play .pct-note-p10 { animation: pct-slide .5s ease-out 2.3s forwards; }
+.pct-play .pct-ring-med { animation: pct-fade .4s ease-out 3.0s forwards; }
+.pct-play .pct-note-med { animation: pct-slide .5s ease-out 3.1s forwards; }
+@keyframes pct-pop { from { opacity: 0; transform: scale(.2); } to { opacity: 1; transform: scale(1); } }
+@keyframes pct-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pct-slide { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+@keyframes pct-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.35); } }
+.pct-replay { margin-top: 12px; font-family: var(--mono); font-size: 12px; color: var(--sage); background: none; border: 1px solid var(--line-2); border-radius: 6px; padding: 5px 12px; cursor: pointer; }
+.pct-replay:hover { border-color: var(--sage); }

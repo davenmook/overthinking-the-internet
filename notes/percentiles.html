@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Percentiles: the 10th tells you who's suffering · Dave Noel</title>
+<meta name="description" content="The median shows you the typical test. The 10th percentile shows you the people having a rough time.">
+<link rel="canonical" href="https://davenoel.me/notes/percentiles.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Overthinking the Internet">
+<meta property="og:title" content="Percentiles: the 10th tells you who's suffering · Dave Noel">
+<meta property="og:description" content="The median shows you the typical test. The 10th percentile shows you the people having a rough time.">
+<meta property="og:url" content="https://davenoel.me/notes/percentiles.html">
+<meta property="og:image" content="https://davenoel.me/assets/img/og/og-percentiles.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#131517">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preload" href="../assets/fonts/bricolage-grotesque-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+<header id="top"><nav class="wrap nav" aria-label="Main">
+<a class="brand" href="../"><img src="../assets/img/avatar-ring.png" alt="" width="40" height="40"><span>Overthinking the Internet</span></a>
+<div class="nav-links">
+<a href="../index.html#stories">Data stories</a>
+<a href="../index.html#notes" aria-current="page">Notes</a>
+<a href="../talks.html">Talks</a>
+<a href="../about.html">About</a>
+<a class="btn btn-primary" href="#contact">Say hi</a>
+</div>
+</nav></header>
+<main class="wrap">
+<div class="article-head">
+<div class="eyebrow">Notes · Data quality</div>
+<h1>Percentiles: the 10th tells you <em>who's suffering.</em></h1>
+<p class="dek">The median shows you the typical test. The 10th percentile shows you the people having a rough time.</p>
+<div class="byline"><img src="../assets/img/avatar-ring.png" alt="" width="36" height="36"><span>Dave Noel · 4 min read</span></div>
+</div>
+
+<article class="prose">
+<p>In <a href="averages-lie.html">Averages lie</a> I learned from the best to lead with the median, and I still stand by that one! The median tells you what a typical person gets. The catch is that the median hides the people having a rough time.</p>
+<p>Those folks are down at the bottom of the pile. That's where the 10th percentile comes in.</p>
+
+<h2>What the 10th percentile is</h2>
+<p>Line up 100 speed tests from slowest to fastest. The 10th one from the slow end is your 10th percentile. One test in ten came in at or below that number, and the other nine did better.</p>
+<p>That's the whole thing. No fancy math, just a different spot in the same line.</p>
+
+<figure class="figure">
+<h3>The 10th test from the slow end is the 10th percentile</h3>
+<p class="sub">100 speed tests lined up slowest to fastest (an illustration, not real data)</p>
+<div class="chart pct-anim" id="pct-chart"><svg viewBox="0 0 720 360" role="img" aria-labelledby="pc-t"><title id="pc-t">100 speed tests in a 10 by 10 grid, slowest at top left and fastest at bottom right. The top row is the slowest 10 percent; its last dot is the 10th percentile. The 50th dot is the median.</title>
+<g class="pct-ends"><text x="51" y="28" font-size="12" fill="#8E9499">slowest test</text>
+<text x="312" y="327" font-size="12" fill="#A9C4A1" text-anchor="end">fastest test</text></g>
+<rect class="pct-band" x="44.5" y="39.5" width="274" height="25" rx="12.5" fill="#33A6B8" fill-opacity="0.10" stroke="#33A6B8" stroke-opacity="0.55"/>
+<circle class="bar pct-dot" style="--i:0" cx="60" cy="52" r="9" fill="#3A3F45"><title>Test 1 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:1" cx="87" cy="52" r="9" fill="#3B4046"><title>Test 2 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:2" cx="114" cy="52" r="9" fill="#3C4247"><title>Test 3 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:3" cx="141" cy="52" r="9" fill="#3D4348"><title>Test 4 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:4" cx="168" cy="52" r="9" fill="#3E4449"><title>Test 5 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:5" cx="195" cy="52" r="9" fill="#40464A"><title>Test 6 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:6" cx="222" cy="52" r="9" fill="#41474B"><title>Test 7 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:7" cx="249" cy="52" r="9" fill="#42484C"><title>Test 8 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:8" cx="276" cy="52" r="9" fill="#434A4C"><title>Test 9 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:9" cx="303" cy="52" r="11" fill="#444B4D"><title>Test 10 of 100 (10th percentile)</title></circle>
+<circle class="bar pct-dot" style="--i:10" cx="60" cy="79" r="9" fill="#454C4E"><title>Test 11 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:11" cx="87" cy="79" r="9" fill="#464E4F"><title>Test 12 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:12" cx="114" cy="79" r="9" fill="#474F50"><title>Test 13 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:13" cx="141" cy="79" r="9" fill="#495051"><title>Test 14 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:14" cx="168" cy="79" r="9" fill="#4A5252"><title>Test 15 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:15" cx="195" cy="79" r="9" fill="#4B5353"><title>Test 16 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:16" cx="222" cy="79" r="9" fill="#4C5454"><title>Test 17 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:17" cx="249" cy="79" r="9" fill="#4D5655"><title>Test 18 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:18" cx="276" cy="79" r="9" fill="#4E5756"><title>Test 19 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:19" cx="303" cy="79" r="9" fill="#4F5957"><title>Test 20 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:20" cx="60" cy="106" r="9" fill="#505A58"><title>Test 21 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:21" cx="87" cy="106" r="9" fill="#525B59"><title>Test 22 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:22" cx="114" cy="106" r="9" fill="#535D59"><title>Test 23 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:23" cx="141" cy="106" r="9" fill="#545E5A"><title>Test 24 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:24" cx="168" cy="106" r="9" fill="#555F5B"><title>Test 25 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:25" cx="195" cy="106" r="9" fill="#56615C"><title>Test 26 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:26" cx="222" cy="106" r="9" fill="#57625D"><title>Test 27 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:27" cx="249" cy="106" r="9" fill="#58635E"><title>Test 28 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:28" cx="276" cy="106" r="9" fill="#59655F"><title>Test 29 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:29" cx="303" cy="106" r="9" fill="#5B6660"><title>Test 30 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:30" cx="60" cy="133" r="9" fill="#5C6761"><title>Test 31 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:31" cx="87" cy="133" r="9" fill="#5D6962"><title>Test 32 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:32" cx="114" cy="133" r="9" fill="#5E6A63"><title>Test 33 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:33" cx="141" cy="133" r="9" fill="#5F6B64"><title>Test 34 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:34" cx="168" cy="133" r="9" fill="#606D65"><title>Test 35 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:35" cx="195" cy="133" r="9" fill="#616E66"><title>Test 36 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:36" cx="222" cy="133" r="9" fill="#626F66"><title>Test 37 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:37" cx="249" cy="133" r="9" fill="#637167"><title>Test 38 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:38" cx="276" cy="133" r="9" fill="#657268"><title>Test 39 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:39" cx="303" cy="133" r="9" fill="#667369"><title>Test 40 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:40" cx="60" cy="160" r="9" fill="#67756A"><title>Test 41 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:41" cx="87" cy="160" r="9" fill="#68766B"><title>Test 42 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:42" cx="114" cy="160" r="9" fill="#69776C"><title>Test 43 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:43" cx="141" cy="160" r="9" fill="#6A796D"><title>Test 44 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:44" cx="168" cy="160" r="9" fill="#6B7A6E"><title>Test 45 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:45" cx="195" cy="160" r="9" fill="#6C7B6F"><title>Test 46 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:46" cx="222" cy="160" r="9" fill="#6E7D70"><title>Test 47 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:47" cx="249" cy="160" r="9" fill="#6F7E71"><title>Test 48 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:48" cx="276" cy="160" r="9" fill="#707F72"><title>Test 49 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:49" cx="303" cy="160" r="9" fill="#718173"><title>Test 50 of 100 (median)</title></circle>
+<circle class="bar pct-dot" style="--i:50" cx="60" cy="187" r="9" fill="#728273"><title>Test 51 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:51" cx="87" cy="187" r="9" fill="#738474"><title>Test 52 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:52" cx="114" cy="187" r="9" fill="#748575"><title>Test 53 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:53" cx="141" cy="187" r="9" fill="#758676"><title>Test 54 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:54" cx="168" cy="187" r="9" fill="#778877"><title>Test 55 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:55" cx="195" cy="187" r="9" fill="#788978"><title>Test 56 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:56" cx="222" cy="187" r="9" fill="#798A79"><title>Test 57 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:57" cx="249" cy="187" r="9" fill="#7A8C7A"><title>Test 58 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:58" cx="276" cy="187" r="9" fill="#7B8D7B"><title>Test 59 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:59" cx="303" cy="187" r="9" fill="#7C8E7C"><title>Test 60 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:60" cx="60" cy="214" r="9" fill="#7D907D"><title>Test 61 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:61" cx="87" cy="214" r="9" fill="#7E917E"><title>Test 62 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:62" cx="114" cy="214" r="9" fill="#80927F"><title>Test 63 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:63" cx="141" cy="214" r="9" fill="#819480"><title>Test 64 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:64" cx="168" cy="214" r="9" fill="#829580"><title>Test 65 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:65" cx="195" cy="214" r="9" fill="#839681"><title>Test 66 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:66" cx="222" cy="214" r="9" fill="#849882"><title>Test 67 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:67" cx="249" cy="214" r="9" fill="#859983"><title>Test 68 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:68" cx="276" cy="214" r="9" fill="#869A84"><title>Test 69 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:69" cx="303" cy="214" r="9" fill="#879C85"><title>Test 70 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:70" cx="60" cy="241" r="9" fill="#889D86"><title>Test 71 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:71" cx="87" cy="241" r="9" fill="#8A9E87"><title>Test 72 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:72" cx="114" cy="241" r="9" fill="#8BA088"><title>Test 73 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:73" cx="141" cy="241" r="9" fill="#8CA189"><title>Test 74 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:74" cx="168" cy="241" r="9" fill="#8DA28A"><title>Test 75 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:75" cx="195" cy="241" r="9" fill="#8EA48B"><title>Test 76 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:76" cx="222" cy="241" r="9" fill="#8FA58C"><title>Test 77 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:77" cx="249" cy="241" r="9" fill="#90A68D"><title>Test 78 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:78" cx="276" cy="241" r="9" fill="#91A88D"><title>Test 79 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:79" cx="303" cy="241" r="9" fill="#93A98E"><title>Test 80 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:80" cx="60" cy="268" r="9" fill="#94AA8F"><title>Test 81 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:81" cx="87" cy="268" r="9" fill="#95AC90"><title>Test 82 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:82" cx="114" cy="268" r="9" fill="#96AD91"><title>Test 83 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:83" cx="141" cy="268" r="9" fill="#97AF92"><title>Test 84 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:84" cx="168" cy="268" r="9" fill="#98B093"><title>Test 85 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:85" cx="195" cy="268" r="9" fill="#99B194"><title>Test 86 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:86" cx="222" cy="268" r="9" fill="#9AB395"><title>Test 87 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:87" cx="249" cy="268" r="9" fill="#9CB496"><title>Test 88 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:88" cx="276" cy="268" r="9" fill="#9DB597"><title>Test 89 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:89" cx="303" cy="268" r="9" fill="#9EB798"><title>Test 90 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:90" cx="60" cy="295" r="9" fill="#9FB899"><title>Test 91 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:91" cx="87" cy="295" r="9" fill="#A0B99A"><title>Test 92 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:92" cx="114" cy="295" r="9" fill="#A1BB9A"><title>Test 93 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:93" cx="141" cy="295" r="9" fill="#A2BC9B"><title>Test 94 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:94" cx="168" cy="295" r="9" fill="#A3BD9C"><title>Test 95 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:95" cx="195" cy="295" r="9" fill="#A5BF9D"><title>Test 96 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:96" cx="222" cy="295" r="9" fill="#A6C09E"><title>Test 97 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:97" cx="249" cy="295" r="9" fill="#A7C19F"><title>Test 98 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:98" cx="276" cy="295" r="9" fill="#A8C3A0"><title>Test 99 of 100</title></circle>
+<circle class="bar pct-dot" style="--i:99" cx="303" cy="295" r="9" fill="#A9C4A1"><title>Test 100 of 100</title></circle>
+<circle class="pct-ring pct-ring-p10" cx="303" cy="52" r="11" fill="none" stroke="#33A6B8" stroke-width="3"/>
+<circle class="pct-ring pct-ring-med" cx="303" cy="160" r="9" fill="none" stroke="#ECEEEF" stroke-width="2"/>
+<g class="pct-note pct-note-p10"><line x1="323" y1="52" x2="355" y2="52" stroke="#33A6B8" stroke-width="1.5"/>
+<text x="365" y="57" font-size="14" fill="#ECEEEF">10th percentile</text>
+<text x="365" y="77" font-size="12" fill="#8E9499">Top row = slowest 10%. Nine in ten did better.</text></g>
+<g class="pct-note pct-note-med"><line x1="321" y1="160" x2="355" y2="160" stroke="#ECEEEF" stroke-opacity="0.6" stroke-width="1.5"/>
+<text x="365" y="165" font-size="14" fill="#ECEEEF">median (the 50th test)</text>
+<text x="365" y="185" font-size="12" fill="#8E9499">What a typical test looks like.</text></g>
+</svg></div>
+<button class="pct-replay" type="button" hidden>Replay</button>
+<figcaption>Read left to right, row by row. The last dot in the top row is the 10th percentile. The 50th dot is the median.</figcaption>
+</figure>
+
+<h2>Two towns with the same median</h2>
+<p>Here's a made-up example. Town A and Town B both have a median download speed of 100 Mbps. Put that on a slide and they look identical.</p>
+<table class="data">
+<thead><tr><th>Example (made up)</th><th>Town A</th><th>Town B</th></tr></thead>
+<tbody>
+<tr><td>10th percentile</td><td>70 Mbps</td><td>2 Mbps</td></tr>
+<tr><td>Median</td><td>100 Mbps</td><td>100 Mbps</td></tr>
+</tbody>
+</table>
+<p>In Town A, even a bad test is pretty usable. In Town B, one test in ten comes in around 2 Mbps, which is rough territory for a house where somebody's on a video call and somebody else is streaming. Town B has a problem, and the median will never tell you about it.</p>
+
+<h2>Signal strength does this too</h2>
+<p>The same thing happens with signal strength (RSSI or RSRP). Say most readings in an area sit around -90 dBm, which is fine. The bottom 10% might be down near -115 dBm, deep inside buildings or out at the edge of a cell. Those are the people with dropped calls and the spinning wheel, and they're invisible if all you report is the middle.</p>
+<p>Before we go further, let's define "bad internet," because a single speed test can fool you. A test is a snapshot. It measures one moment, on one device, from one spot in your house.</p>
+<p>Let's run a quick thought experiment. Maria runs a test from her couch on a Tuesday night and gets 4 Mbps. What she can't see is that her son is downloading a big game update, and she's two rooms away from the router. Next door, Sam tests at 6 a.m. right next to his router and gets 900 Mbps. Yet his video calls freeze in the evenings.</p>
+<p>So who has bad internet? From those two tests alone, you can't tell. One slow result doesn't prove Maria's connection is bad, and one fast result doesn't prove Sam's is good. To actually know, you need lots of tests over time, and that's the job percentiles do.</p>
+<p>Here's how that plays out. If Maria's 10th percentile over a month looks healthy, Tuesday was a one-off. If Sam's 10th percentile keeps coming in low, his problem is real, and that one great test was covering for it.</p>
+
+<h2>How I pull it</h2>
+<p>It's one line in SQL:</p>
+<pre><code>select
+  percentile_cont(0.5) within group (order by download_mbps) as median_mbps,
+  percentile_cont(0.1) within group (order by download_mbps) as p10_mbps
+from speed_tests;</code></pre>
+<p>And in pandas:</p>
+<pre><code>df["download_mbps"].quantile([0.1, 0.5])</code></pre>
+<p>(When should someone use SQL or Python? Coming to a theater near you!)</p>
+<p>These days the 10th percentile sits right next to the median whenever I share speeds. If the gap between them is big, that gap is usually the story.</p>
+<p>The median tells you how most people are doing. The 10th percentile tells you who's suffering. I report both.</p>
+</article>
+
+<section class="next" aria-label="More notes">
+<a class="talk" href="averages-lie.html"><span class="meta">NEXT · DATA QUALITY</span><span class="title">Averages lie</span><p>Why the median tells you more about your internet speed than the mean ever will.</p></a>
+<a class="talk" href="i-was-a-terrible-student.html"><span class="meta">NEXT · MENTORING</span><span class="title">I was a terrible student</span><p>Remedial math, three tries at Circuits 1, and what failing taught me.</p></a>
+</section>
+</main>
+<footer class="footer" id="contact">
+<div class="wrap footer-top">
+<div class="footer-cta">
+<strong>Want to talk data, networks, mentoring, or customer success? Say hi.</strong>
+<span class="email">davidnmook@gmail.com</span>
+<small>I'll probably overthink my reply.</small>
+</div>
+<div class="footer-links">
+<a href="https://www.linkedin.com/in/noeldave">LinkedIn</a>
+<a href="https://github.com/davenmook">GitHub</a>
+<a href="../about.html">About</a>
+<a href="#top">Back to top</a>
+</div>
+</div>
+<div class="wrap footer-fine">© 2026 Dave Noel · Views are my own · Data from public sources, credited on every chart.</div>
+</footer>
+<script>
+(function(){var c=document.getElementById('pct-chart');if(!c)return;
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
+var b=c.parentNode.querySelector('.pct-replay');c.classList.add('pct-wait');
+function play(){c.classList.remove('pct-play');void c.getBoundingClientRect();c.classList.add('pct-play');}
+new IntersectionObserver(function(e,o){if(e[0].isIntersecting){play();o.disconnect();b.hidden=false;}},{threshold:0.4}).observe(c);
+b.addEventListener('click',play);})();
+</script>
+</body>
+</html>
