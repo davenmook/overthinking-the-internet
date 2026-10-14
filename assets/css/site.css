@@ -246,3 +246,16 @@ details.table-view .scroll { overflow-x: auto; margin-top: 10px; }
 .hist-play .hist-test { animation: hist-drop .5s ease-out 2.45s forwards; }
 @keyframes hist-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 @keyframes hist-drop { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+
+/* Fort Bend vs Waller chart (Percentiles post). Medians land first, then the 10th percentiles slide out. */
+.pair-anim circle { transform-box: fill-box; transform-origin: center; }
+.pair-wait .pair-ax, .pair-wait .pair-bar, .pair-wait .pair-p90, .pair-wait .pair-med, .pair-wait .pair-medlab, .pair-wait .pair-p10, .pair-wait .pair-p10lab { opacity: 0; }
+.pair-play .pair-ax { animation: pct-fade .5s ease-out forwards; }
+.pair-play .pair-med { animation: pct-pop .4s cubic-bezier(.3,1.5,.6,1) .4s forwards; }
+.pair-play .pair-medlab { animation: pct-fade .4s ease-out .7s forwards; }
+.pair-play .pair-bar { animation: pct-fade .6s ease-out 1.5s forwards; }
+.pair-play .pair-p90 { animation: pct-pop .4s cubic-bezier(.3,1.5,.6,1) 1.6s forwards; }
+.pair-play .pair-p10 { animation: pair-slide 1.3s cubic-bezier(.2,.7,.2,1) 1.5s forwards; }
+.pair-play .pair-p10lab { animation: pct-fade .4s ease-out 2.8s forwards; }
+@keyframes pair-slide { 0% { opacity: 0; transform: translateX(var(--dx)); } 15% { opacity: 1; } 100% { opacity: 1; transform: none; } }
+.prose .notes-list .pinned .meta, .notes-list .pinned .meta { color: var(--sage); }
