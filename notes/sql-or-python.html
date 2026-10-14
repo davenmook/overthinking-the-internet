@@ -20,7 +20,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/bricolage-grotesque-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../assets/css/site.css">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261014">
 <!-- PostHog: product analytics, web analytics, session replay, experiments -->
 <script async src="https://us-assets.i.posthog.com/static/array.js" onload="window.posthog&&posthog.init('phc_wPRDMiWxnPrd356Rk4mPPCwphxNJaoqS666aZrGCzYdj',{api_host:'https://us.i.posthog.com',person_profiles:'identified_only'})"></script>
 </head>
@@ -153,8 +153,7 @@ out[<span class="tk-s">"median_test"</span>] = tiles[running &gt;= total / <span
 <g class="hist-mark hist-test"><line x1="302.2" x2="302.2" y1="68" y2="300" stroke="#D0912A" stroke-width="2" stroke-dasharray="8 4"/><text x="308.2" y="66" font-size="12" fill="#ECEEEF">Middle test 401 <tspan fill="#8E9499">Mbps</tspan></text><circle cx="302.2" cy="62" r="4" fill="#D0912A"/></g>
 <line x1="56" x2="700" y1="300" y2="300" stroke="#3A3F45"/>
 </svg></div>
-<button class="pct-replay hist-replay" type="button" hidden>Replay</button>
-<figcaption>One tile in ten averages under 50 Mbps (the teal bar). The middle tile sits at 309 Mbps, and the middle test, which leans toward busy tiles, sits at 401. Hover a bar for its count. Source: Speedtest&reg; by Ookla&reg; open data via Ookla for Good.</figcaption>
+<figcaption>One tile in ten averages under 50 Mbps (the teal bar). The middle tile sits at 309 Mbps, and the middle test, which leans toward busy tiles, sits at 401. It replays every few seconds; hover a bar for its count. Source: Speedtest&reg; by Ookla&reg; open data via Ookla for Good.</figcaption>
 </figure>
 
 <figure class="figure">
@@ -275,10 +274,14 @@ out[<span class="tk-s">"median_test"</span>] = tiles[running &gt;= total / <span
 <script>
 (function(){var c=document.getElementById('hist-chart');if(!c)return;
 if(window.matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
-var b=c.parentNode.querySelector('.hist-replay');c.classList.add('hist-wait');
+c.classList.add('hist-wait');
+var PLAY=3000,HOLD=5000,t=null,seen=false;
 function play(){c.classList.remove('hist-play');void c.getBoundingClientRect();c.classList.add('hist-play');}
-var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){io.disconnect();play();if(b)b.hidden=false;}},{threshold:.35});
-io.observe(c);if(b)b.addEventListener('click',play);
+function loop(){play();t=setTimeout(loop,PLAY+HOLD);}
+new IntersectionObserver(function(e){
+  if(e[0].isIntersecting){if(!t)loop();}
+  else{clearTimeout(t);t=null;}
+},{threshold:.35}).observe(c);
 })();
 </script>
 </body>
