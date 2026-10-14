@@ -2,7 +2,7 @@
 
 Source for [davenoel.me](https://davenoel.me), the personal site of Dave Noel: professional overthinker of your internet connection.
 
-Plain HTML and CSS. No framework, no build step, no tracking.
+Plain HTML and CSS. No framework, no build step. Analytics, session replay and experiments run on PostHog (one script tag in each page head).
 
 ## What's where
 
