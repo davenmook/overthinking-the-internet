@@ -259,3 +259,56 @@ details.table-view .scroll { overflow-x: auto; margin-top: 10px; }
 .pair-play .pair-p10lab { animation: pct-fade .4s ease-out 2.8s forwards; }
 @keyframes pair-slide { 0% { opacity: 0; transform: translateX(var(--dx)); } 15% { opacity: 1; } 100% { opacity: 1; transform: none; } }
 .prose .notes-list .pinned .meta, .notes-list .pinned .meta { color: var(--sage); }
+
+/* ---------- Light theme ("Paper and Sage"). Dark stays the default; light is opt-in via the nav toggle. ----------
+   Same hues as dark, in deeper shades so they read on paper. When adding a chart, use the palette hexes below
+   (or tokens) so these mappings recolor it, and check the page in both themes before deploying. */
+html[data-theme="light"] {
+  --bg: #F5F4EF; --bg-2: #EEECE5; --raise: #FFFFFF; --line: #E2DFD6; --line-2: #CDC9BE;
+  --fg: #16191B; --fg-2: #3C4146; --muted: #656B71;
+  --sage: #4A7543; --sage-hi: #36592F; --sage-fill: #A9C4A1; --sage-tint: #E8EFE5;
+  --teal: #1D7A89; --neutral-mark: #C9CDD0;
+  color-scheme: light;
+}
+html[data-theme="light"] .btn-primary, html[data-theme="light"] .status { background: var(--sage-fill); color: var(--fg); }
+html[data-theme="light"] .btn-primary:hover { background: #95B58C; color: var(--fg); }
+html[data-theme="light"] .nav-links .btn, html[data-theme="light"] .nav-links .btn:hover { color: var(--fg); }
+html[data-theme="light"] .strip, html[data-theme="light"] .footer { border-color: var(--line); }
+html[data-theme="light"] .callout { background: var(--sage-tint); border-color: #D3E0CE; }
+html[data-theme="light"] .flares::before { background: radial-gradient(circle, rgba(169,196,161,0.55) 0%, rgba(169,196,161,0) 68%); }
+html[data-theme="light"] .flares::after { background: radial-gradient(circle, rgba(51,166,184,0.22) 0%, rgba(51,166,184,0) 68%); }
+html[data-theme="light"] .dots { background-image: radial-gradient(rgba(22,25,27,0.08) 1.5px, transparent 1.7px); }
+html[data-theme="light"] .avatar-orbit::before { border-color: rgba(74,117,67,0.35); }
+html[data-theme="light"] .avatar-orbit::after { border-color: rgba(29,122,137,0.25); }
+html[data-theme="light"] .tk-n { color: #8A5F0E; }
+html[data-theme="light"] .kpi .b { color: var(--muted); }
+html[data-theme="light"] .legend i[style*="#ECEEEF"] { background: var(--fg) !important; }
+html[data-theme="light"] .legend i[style*="#4A5056"] { background: var(--neutral-mark) !important; }
+html[data-theme="light"] .legend i[style*="#6B7177"] { background: #9AA0A6 !important; }
+/* Inline SVG charts: map the dark palette to light tokens (CSS beats SVG presentation attributes). */
+html[data-theme="light"] main svg [fill="#ECEEEF"] { fill: var(--fg); }
+html[data-theme="light"] main svg [stroke="#ECEEEF"] { stroke: var(--fg); }
+html[data-theme="light"] main svg [fill="#C9CDD0"] { fill: var(--fg-2); }
+html[data-theme="light"] main svg [fill="#8E9499"] { fill: var(--muted); }
+html[data-theme="light"] main svg [fill="#A9C4A1"] { fill: #7FA676; }
+html[data-theme="light"] main svg [stroke="#A9C4A1"] { stroke: #7FA676; }
+html[data-theme="light"] main svg text[fill="#A9C4A1"] { fill: var(--sage); }
+html[data-theme="light"] main svg [fill="#33A6B8"] { fill: var(--teal); }
+html[data-theme="light"] main svg [stroke="#33A6B8"] { stroke: var(--teal); }
+html[data-theme="light"] main svg [fill="#D0912A"] { fill: #A86F14; }
+html[data-theme="light"] main svg [stroke="#D0912A"] { stroke: #A86F14; }
+html[data-theme="light"] main svg [fill="#4A5056"] { fill: var(--neutral-mark); }
+html[data-theme="light"] main svg [fill="#6B7177"] { fill: #9AA0A6; }
+html[data-theme="light"] main svg [stroke="#6B7177"] { stroke: var(--line-2); }
+html[data-theme="light"] main svg [stroke="#2A2E33"], html[data-theme="light"] main svg [stroke="#3A3F45"] { stroke: var(--line); }
+html[data-theme="light"] main svg [stroke="#1B1E21"] { stroke: var(--raise); }
+/* Percentiles 100-dot grid: pale gray at the slow end to sage at the fast end */
+html[data-theme="light"] .pct-dot { fill: color-mix(in srgb, #7FA676 calc(var(--i) * 1%), #D3D6D8); }
+
+/* Theme toggle button */
+.theme-toggle { display: inline-grid; place-items: center; width: 40px; height: 40px; padding: 0; border-radius: 8px; border: 1px solid var(--line-2); background: none; color: var(--fg-2); cursor: pointer; }
+.theme-toggle:hover { border-color: var(--sage); color: var(--fg); }
+.theme-toggle svg { width: 18px; height: 18px; }
+.theme-toggle .moon { display: none; }
+html[data-theme="light"] .theme-toggle .sun { display: none; }
+html[data-theme="light"] .theme-toggle .moon { display: block; }

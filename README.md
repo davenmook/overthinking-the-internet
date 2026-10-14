@@ -24,3 +24,12 @@ Carbon `#131517` background, text `#ECEEEF`, sage green accent `#A9C4A1`, teal g
 Every chart credits its source. Story data comes from public sources only.
 
 Views are my own.
+
+## Light and dark themes
+
+Dark is the default. Visitors can switch to light ("Paper and Sage") with the sun/moon button in the nav; the choice is saved in their browser and logged to PostHog as `theme_toggled`.
+
+- Theme colors live in `assets/css/site.css` (`:root` for dark, `html[data-theme="light"]` for light). The toggle is `assets/js/theme.js`, plus a one-line script in each page's `<head>` so there's no flash of the wrong theme.
+- Inline SVG charts recolor automatically as long as they use the palette hexes (`#ECEEEF`, `#C9CDD0`, `#8E9499`, `#A9C4A1`, `#33A6B8`, `#6B7177`, `#4A5056`, `#2A2E33`, `#3A3F45`, `#D0912A`). A new color needs a light mapping in `site.css`.
+- **Before every deploy, check new or changed pages in both themes.** Keep site charts as inline SVG; PNG charts don't recolor.
+- Rollback: the last dark-only version is git tag `dark-only-2026-10-14` (and `backups/davenoel.me_dark-only_2026-10-14.zip`).
