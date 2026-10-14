@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQL or Python? Yes. · Dave Noel</title>
+<meta name="description" content="Same question, two languages, one answer. Median Texas download speeds by county, computed in DuckDB SQL and in pandas, and a county where one tile outvoted everybody.">
+<link rel="canonical" href="https://davenoel.me/notes/sql-or-python.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Overthinking the Internet">
+<meta property="og:title" content="SQL or Python? Yes. · Dave Noel">
+<meta property="og:description" content="Same question, two languages, one answer. Median Texas download speeds by county, computed in DuckDB SQL and in pandas, and a county where one tile outvoted everybody.">
+<meta property="og:url" content="https://davenoel.me/notes/sql-or-python.html">
+<meta property="og:image" content="https://davenoel.me/assets/img/og/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#131517">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preload" href="../assets/fonts/bricolage-grotesque-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/css/site.css">
+<!-- PostHog: product analytics, web analytics, session replay, experiments -->
+<script async src="https://us-assets.i.posthog.com/static/array.js" onload="window.posthog&&posthog.init('phc_wPRDMiWxnPrd356Rk4mPPCwphxNJaoqS666aZrGCzYdj',{api_host:'https://us.i.posthog.com',person_profiles:'identified_only'})"></script>
+</head>
+<body>
+<header id="top"><nav class="wrap nav" aria-label="Main">
+<a class="brand" href="../"><img src="../assets/img/avatar-ring.png" alt="" width="40" height="40"><span>Overthinking the Internet</span></a>
+<div class="nav-links">
+<a href="../index.html#stories">Data stories</a>
+<a href="../index.html#notes" aria-current="page">Notes</a>
+<a href="../talks.html">Talks</a>
+<a href="../about.html">About</a>
+<a class="btn btn-primary" href="#contact">Say hi</a>
+</div>
+</nav></header>
+<main class="wrap">
+<div class="article-head">
+<div class="eyebrow">Notes · SQL and Python</div>
+<h1>SQL or Python? <em>Yes.</em></h1>
+<p class="dek">Same question, two languages, one answer. Plus a county where one tile outvoted everybody.</p>
+<div class="byline"><img src="../assets/img/avatar-ring.png" alt="" width="36" height="36"><span>Dave Noel · 6 min read</span></div>
+</div>
+
+<article class="prose">
+<p>At the end of <a href="percentiles.html">Percentiles</a> I promised an answer to "should I use SQL or Python?" Here it is: yes. I use both every week, and they're good at different jobs. So instead of picking a side, I gave them the same question and made them race.</p>
+
+<h2>The question</h2>
+<p>What's the median fixed download speed in every Texas county, every quarter of 2025?</p>
+<p>The data is Ookla's open performance tiles. Each tile is about 600 meters on a side and carries an average download speed plus a count of how many tests were taken there. For Texas in 2025 that's 535,217 tile-quarters and about 6.7 million tests across all 254 counties.</p>
+
+<h2>How the work actually split</h2>
+<ol>
+<li><strong>Get the data: SQL.</strong> Ookla publishes one Parquet file per quarter for the whole planet. DuckDB reads them straight off S3 and keeps only the Texas box and the nine columns I need. Four global files in, one 10 MB Texas file out.</li>
+<li><strong>Put each tile in a county: Python.</strong> That's a point-in-polygon problem, and geopandas does it in one line against the Census county map.</li>
+<li><strong>Compute the medians: both.</strong> This is the race.</li>
+<li><strong>Prove they match: Python.</strong> A small script runs both versions and fails loudly if they disagree. They agree on all 1,016 county-quarter rows.</li>
+</ol>
+<p>Notice nobody won every step. Moving and shrinking data is SQL's home turf. Geometry, gluing steps together and checking the work is where Python shines.</p>
+
+<h2>Two medians, not one</h2>
+<p>Here's the twist that made this fun. "Median speed by county" sounds like one number, and it's really two.</p>
+<p>The <strong>middle tile</strong>: line up every tile from slowest to fastest and take the one in the middle. Each tile counts once, whether it had 1 test or 1,000.</p>
+<p>The <strong>middle test</strong>: same line, but keep a running total of tests as you walk from the slow end. The tile where you pass the halfway mark is your median. Busy tiles count more.</p>
+<p>Here's the middle-test version in SQL (trimmed a little for the page):</p>
+<pre class="code" data-lang="SQL"><code><span class="tk-k">SELECT</span> county, quarter,
+       <span class="tk-f">MEDIAN</span>(mbps) <span class="tk-k">AS</span> median_tile,
+       <span class="tk-p">-- first tile where the running total of tests passes half</span>
+       <span class="tk-f">MIN</span>(mbps) <span class="tk-k">FILTER</span> (<span class="tk-k">WHERE</span> running &gt;= total / <span class="tk-n">2.0</span>) <span class="tk-k">AS</span> median_test
+<span class="tk-k">FROM</span> (
+    <span class="tk-k">SELECT</span> *,
+           <span class="tk-f">SUM</span>(tests) <span class="tk-k">OVER</span> (<span class="tk-k">PARTITION BY</span> county, quarter
+                            <span class="tk-k">ORDER BY</span> mbps <span class="tk-k">ROWS UNBOUNDED PRECEDING</span>) <span class="tk-k">AS</span> running,
+           <span class="tk-f">SUM</span>(tests) <span class="tk-k">OVER</span> (<span class="tk-k">PARTITION BY</span> county, quarter) <span class="tk-k">AS</span> total
+    <span class="tk-k">FROM</span> tiles
+)
+<span class="tk-k">GROUP BY ALL</span>;</code></pre>
+<p>And the same thing in pandas:</p>
+<pre class="code" data-lang="Python"><code>keys = [<span class="tk-s">"county"</span>, <span class="tk-s">"quarter"</span>]
+out = tiles.<span class="tk-f">groupby</span>(keys).<span class="tk-f">agg</span>(median_tile=(<span class="tk-s">"mbps"</span>, <span class="tk-s">"median"</span>))
+
+<span class="tk-p"># sort slowest first, keep a running total of tests</span>
+tiles = tiles.<span class="tk-f">sort_values</span>(keys + [<span class="tk-s">"mbps"</span>])
+running = tiles.<span class="tk-f">groupby</span>(keys)[<span class="tk-s">"tests"</span>].<span class="tk-f">cumsum</span>()
+total = tiles.<span class="tk-f">groupby</span>(keys)[<span class="tk-s">"tests"</span>].<span class="tk-f">transform</span>(<span class="tk-s">"sum"</span>)
+out[<span class="tk-s">"median_test"</span>] = tiles[running &gt;= total / <span class="tk-n">2</span>].<span class="tk-f">groupby</span>(keys)[<span class="tk-s">"mbps"</span>].<span class="tk-f">min</span>()</code></pre>
+<p>Which one reads better depends on who's reading. The SQL reads like a description of the answer. The pandas reads like a recipe.</p>
+
+<h2>What the two medians said</h2>
+<table class="data">
+<thead><tr><th>All of Texas</th><th>Middle tile</th><th>Middle test</th></tr></thead>
+<tbody>
+<tr><td>Q1 2025</td><td>288 Mbps</td><td>360 Mbps</td></tr>
+<tr><td>Q2 2025</td><td>283 Mbps</td><td>361 Mbps</td></tr>
+<tr><td>Q3 2025</td><td>293 Mbps</td><td>372 Mbps</td></tr>
+<tr><td>Q4 2025</td><td>309 Mbps</td><td>401 Mbps</td></tr>
+</tbody>
+</table>
+<p>Same data, same quarter, and a 92 Mbps gap in Q4 just from asking a slightly different question. Busy tiles tend to be in town, and town tends to have faster service. Across Texas in Q4, tiles with a single test had a median of 145 Mbps. Tiles with 20 or more tests came in at 409 Mbps.</p>
+
+<figure class="figure">
+<h3>The middle tile and the middle test can tell very different stories</h3>
+<p class="sub">Median fixed download speed in Mbps, Q4 2025</p>
+<div class="chart"><svg viewBox="0 0 720 356" role="img" aria-labelledby="sp-t"><title id="sp-t">Q4 2025 median download speed, middle tile versus middle test, for Texas and six counties. Values are listed in the table below the chart.</title>
+<line x1="150.0" x2="150.0" y1="32" y2="326" stroke="#2A2E33" stroke-width="1"/>
+<text x="150.0" y="344" font-size="12" fill="#8E9499" text-anchor="middle">0</text>
+<line x1="238.3" x2="238.3" y1="32" y2="326" stroke="#2A2E33" stroke-width="1"/>
+<text x="238.3" y="344" font-size="12" fill="#8E9499" text-anchor="middle">100</text>
+<line x1="326.7" x2="326.7" y1="32" y2="326" stroke="#2A2E33" stroke-width="1"/>
+<text x="326.7" y="344" font-size="12" fill="#8E9499" text-anchor="middle">200</text>
+<line x1="415.0" x2="415.0" y1="32" y2="326" stroke="#2A2E33" stroke-width="1"/>
+<text x="415.0" y="344" font-size="12" fill="#8E9499" text-anchor="middle">300</text>
+<line x1="503.3" x2="503.3" y1="32" y2="326" stroke="#2A2E33" stroke-width="1"/>
+<text x="503.3" y="344" font-size="12" fill="#8E9499" text-anchor="middle">400</text>
+<line x1="591.7" x2="591.7" y1="32" y2="326" stroke="#2A2E33" stroke-width="1"/>
+<text x="591.7" y="344" font-size="12" fill="#8E9499" text-anchor="middle">500</text>
+<line x1="680.0" x2="680.0" y1="32" y2="326" stroke="#2A2E33" stroke-width="1"/>
+<text x="680.0" y="344" font-size="12" fill="#8E9499" text-anchor="middle">600</text>
+<circle cx="156" cy="16" r="6" fill="#BD8019"/><text x="168" y="20" font-size="13" fill="#C9CDD0">Middle tile</text>
+<rect x="280" y="10" width="12" height="12" rx="2" fill="#1E9CBF" transform="rotate(45 286 16)"/><text x="300" y="20" font-size="13" fill="#C9CDD0">Middle test</text>
+<text x="136" y="64" font-size="13" fill="#ECEEEF" font-weight="600" text-anchor="end">Texas (all tiles)</text>
+<line x1="423.2" x2="504.6" y1="60" y2="60" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="423.2" cy="60" r="12" fill="transparent"/><circle cx="423.2" cy="60" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Texas (all tiles): middle tile 309 Mbps</title></g>
+<g class="dot"><rect x="492.6" y="48" width="24" height="24" fill="transparent"/><rect x="498.6" y="54" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 504.6 60)"/><title>Texas (all tiles): middle test 401 Mbps</title></g>
+<text x="411.2" y="64" font-size="12" fill="#8E9499" text-anchor="end">309</text>
+<text x="516.6" y="64" font-size="12" fill="#8E9499">401</text>
+<text x="136" y="104" font-size="13" fill="#ECEEEF" font-weight="400" text-anchor="end">Harris</text>
+<line x1="493.2" x2="511.9" y1="100" y2="100" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="493.2" cy="100" r="12" fill="transparent"/><circle cx="493.2" cy="100" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Harris: middle tile 388 Mbps</title></g>
+<g class="dot"><rect x="499.9" y="88" width="24" height="24" fill="transparent"/><rect x="505.9" y="94" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 511.9 100)"/><title>Harris: middle test 410 Mbps</title></g>
+<text x="136" y="144" font-size="13" fill="#ECEEEF" font-weight="400" text-anchor="end">Dallas</text>
+<line x1="506.8" x2="515.1" y1="140" y2="140" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="506.8" cy="140" r="12" fill="transparent"/><circle cx="506.8" cy="140" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Dallas: middle tile 404 Mbps</title></g>
+<g class="dot"><rect x="503.1" y="128" width="24" height="24" fill="transparent"/><rect x="509.1" y="134" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 515.1 140)"/><title>Dallas: middle test 413 Mbps</title></g>
+<text x="136" y="184" font-size="13" fill="#ECEEEF" font-weight="400" text-anchor="end">Bexar</text>
+<line x1="500.5" x2="526.5" y1="180" y2="180" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="500.5" cy="180" r="12" fill="transparent"/><circle cx="500.5" cy="180" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Bexar: middle tile 397 Mbps</title></g>
+<g class="dot"><rect x="514.5" y="168" width="24" height="24" fill="transparent"/><rect x="520.5" y="174" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 526.5 180)"/><title>Bexar: middle test 426 Mbps</title></g>
+<text x="136" y="224" font-size="13" fill="#ECEEEF" font-weight="400" text-anchor="end">Travis</text>
+<line x1="482.6" x2="512.3" y1="220" y2="220" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="482.6" cy="220" r="12" fill="transparent"/><circle cx="482.6" cy="220" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Travis: middle tile 377 Mbps</title></g>
+<g class="dot"><rect x="500.3" y="208" width="24" height="24" fill="transparent"/><rect x="506.3" y="214" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 512.3 220)"/><title>Travis: middle test 410 Mbps</title></g>
+<text x="136" y="264" font-size="13" fill="#ECEEEF" font-weight="400" text-anchor="end">Falls</text>
+<line x1="232.5" x2="599.0" y1="260" y2="260" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="232.5" cy="260" r="12" fill="transparent"/><circle cx="232.5" cy="260" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Falls: middle tile 93 Mbps</title></g>
+<g class="dot"><rect x="587.0" y="248" width="24" height="24" fill="transparent"/><rect x="593.0" y="254" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 599.0 260)"/><title>Falls: middle test 508 Mbps</title></g>
+<text x="220.5" y="264" font-size="12" fill="#8E9499" text-anchor="end">93</text>
+<text x="611.0" y="264" font-size="12" fill="#8E9499">508</text>
+<text x="136" y="304" font-size="13" fill="#ECEEEF" font-weight="400" text-anchor="end">Reeves</text>
+<line x1="205.0" x2="285.0" y1="300" y2="300" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="285.0" cy="300" r="12" fill="transparent"/><circle cx="285.0" cy="300" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Reeves: middle tile 153 Mbps</title></g>
+<g class="dot"><rect x="193.0" y="288" width="24" height="24" fill="transparent"/><rect x="199.0" y="294" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 205.0 300)"/><title>Reeves: middle test 62 Mbps</title></g>
+<text x="193.0" y="304" font-size="12" fill="#8E9499" text-anchor="end">62</text>
+<text x="297.0" y="304" font-size="12" fill="#8E9499">153</text>
+</svg></div>
+<table class="data">
+<thead><tr><th>Q4 2025</th><th>Middle tile</th><th>Middle test</th></tr></thead>
+<tbody>
+<tr><td>Texas (all tiles)</td><td>309 Mbps</td><td>401 Mbps</td></tr>
+<tr><td>Harris</td><td>388 Mbps</td><td>410 Mbps</td></tr>
+<tr><td>Dallas</td><td>404 Mbps</td><td>413 Mbps</td></tr>
+<tr><td>Bexar</td><td>397 Mbps</td><td>426 Mbps</td></tr>
+<tr><td>Travis</td><td>377 Mbps</td><td>410 Mbps</td></tr>
+<tr><td>Falls</td><td>93 Mbps</td><td>508 Mbps</td></tr>
+<tr><td>Reeves</td><td>153 Mbps</td><td>62 Mbps</td></tr>
+</tbody>
+</table>
+<figcaption>Source: Speedtest&reg; by Ookla&reg; Global Fixed and Mobile Network Performance Maps, fixed tiles, Q4 2025. Counties: US Census Bureau. Hover a marker for its value.</figcaption>
+</figure>
+
+<p>In the big metros the two medians land close together. Harris, Dallas, Bexar and Travis are all within about 35 Mbps. The fun is in the small counties.</p>
+
+<h2>Reeves County: one tile, two devices</h2>
+<p>In Q4, Reeves County had 2,124 tests spread across 243 tiles. One of those tiles had 1,044 of them, almost half the county, from just 2 devices. That tile averaged 62 Mbps.</p>
+<p>So the middle test for all of Reeves County is 62 Mbps, because that one tile sits right on the halfway mark. The middle tile says 153 Mbps.</p>
+<p>I don't know who's behind those 1,044 tests, and the data can't tell me. What I do know is that a test-weighted median listens to whoever talks the most. This is why I check the <code>devices</code> column next to <code>tests</code> before I trust a weighted number in a small area.</p>
+
+<h2>Falls County: the opposite problem</h2>
+<p>Falls County flips it around. The middle tile is 93 Mbps and the middle test is 508 Mbps.</p>
+<p>More than half its tiles have 2 tests or fewer, and those tiles have a median around 77 Mbps. The tiles with 10 or more tests have a median of 508 Mbps, and about 60% of their tests come from in and around Marlin, the county seat. The tile median hears from the countryside. The test median hears from town.</p>
+<p>Neither number is wrong. They answer different questions: "what does a typical place in this county get?" versus "what does a typical test in this county see?" Pick the one that matches your question, and say which one you picked.</p>
+
+<h2>So which do I reach for?</h2>
+<ul>
+<li><strong>SQL</strong> when the data lives in a warehouse or a big file and the job is filter, join, group or rank. Do the heavy lifting where the data lives.</li>
+<li><strong>Python</strong> for geometry, charts, stats that SQL doesn't have built in, and stitching steps together.</li>
+<li><strong>Both</strong> when the number matters. Compute it two ways and make them agree. That match on all 1,016 rows is what lets me sleep at night.</li>
+</ul>
+<p>Everything is in the <a href="https://github.com/davenmook/data-stories/tree/main/sql-or-python">data-stories repo</a>: the download script, the county join, both versions and the check. Run it yourself and tell me if I got something wrong!</p>
+<p>Next week: how many speed tests is enough to trust a number at all? Reeves County is going to come up again.</p>
+
+<p class="source"><small>Speedtest&reg; by Ookla&reg; Global Fixed and Mobile Network Performance Maps. Based on analysis by Ookla of Speedtest Intelligence&reg; data for Q1 to Q4 2025. Provided by Ookla and accessed 13 October 2026. Ookla trademarks used under license and reprinted with permission. Data licensed CC BY-NC-SA 4.0. County boundaries: US Census Bureau.</small></p>
+</article>
+
+<section class="next" aria-label="More notes">
+<a class="talk" href="percentiles.html"><span class="meta">NEXT · DATA QUALITY</span><span class="title">Percentiles: the 10th tells you who's suffering</span><p>The median shows you the typical test. The 10th percentile shows you the people having a rough time.</p></a>
+<a class="talk" href="averages-lie.html"><span class="meta">NEXT · DATA QUALITY</span><span class="title">Averages lie</span><p>Why the median tells you more about your internet speed than the mean ever will.</p></a>
+</section>
+</main>
+<footer class="footer" id="contact">
+<div class="wrap footer-top">
+<div class="footer-cta">
+<strong>Want to talk data, networks, mentoring, or customer success? Say hi.</strong>
+<span class="email">davidnmook@gmail.com</span>
+<small>I'll probably overthink my reply.</small>
+</div>
+<div class="footer-links">
+<a href="https://www.linkedin.com/in/noeldave">LinkedIn</a>
+<a href="https://github.com/davenmook">GitHub</a>
+<a href="../about.html">About</a>
+<a href="#top">Back to top</a>
+</div>
+</div>
+<div class="wrap footer-fine">© 2026 Dave Noel · Views are my own · Data from public sources, credited on every chart.</div>
+</footer>
+</body>
+</html>
