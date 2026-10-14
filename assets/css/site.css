@@ -234,3 +234,15 @@ details.table-view .scroll { overflow-x: auto; margin-top: 10px; }
 .tk-s { color: var(--sage-hi); }
 .tk-n { color: #E6C07B; }
 .tk-p { color: var(--muted); }
+
+/* Histogram animation (SQL or Python post). Runs only when JS adds .hist-wait; reduced motion keeps it static */
+.hist-anim .hist-bar rect:first-child { transform-box: fill-box; transform-origin: bottom; }
+.hist-anim .hist-bar:hover rect:first-child { filter: brightness(1.25); }
+.hist-wait .hist-bar rect:first-child { transform: scaleY(0); }
+.hist-wait .hist-mark { opacity: 0; }
+.hist-play .hist-bar rect:first-child { animation: hist-grow .55s cubic-bezier(.2,.9,.3,1) forwards; animation-delay: calc(var(--i) * 45ms); }
+.hist-play .hist-p10 { animation: hist-drop .5s ease-out 1.25s forwards; }
+.hist-play .hist-med { animation: hist-drop .5s ease-out 1.85s forwards; }
+.hist-play .hist-test { animation: hist-drop .5s ease-out 2.45s forwards; }
+@keyframes hist-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes hist-drop { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }

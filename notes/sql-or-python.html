@@ -39,25 +39,25 @@
 <div class="article-head">
 <div class="eyebrow">Notes · SQL and Python</div>
 <h1>SQL or Python? <em>Yes.</em></h1>
-<p class="dek">Same question, two languages, one answer. Plus a county where one tile outvoted everybody.</p>
+<p class="dek">Same question, two languages, one answer. Plus a county where one tile out-tests everybody.</p>
 <div class="byline"><img src="../assets/img/avatar-ring.png" alt="" width="36" height="36"><span>Dave Noel · 6 min read</span></div>
 </div>
 
 <article class="prose">
-<p>At the end of <a href="percentiles.html">Percentiles</a> I promised an answer to "should I use SQL or Python?" Here it is: yes. I use both every week, and they're good at different jobs. So instead of picking a side, I gave them the same question and made them race.</p>
+<p>At the end of <a href="percentiles.html">Percentiles</a> I promised an answer to "should I use SQL or Python?" Here it is: yes. The answer is 100% yes. I use both every week, and they're good at different jobs. So instead of picking a side, I gave them the same question and made them race.</p>
 
 <h2>The question</h2>
 <p>What's the median fixed download speed in every Texas county, every quarter of 2025?</p>
-<p>The data is Ookla's open performance tiles. Each tile is about 600 meters on a side and carries an average download speed plus a count of how many tests were taken there. For Texas in 2025 that's 535,217 tile-quarters and about 6.7 million tests across all 254 counties.</p>
+<p>The data is Ookla's open performance tiles, shared publicly through <a href="https://www.ookla.com/ookla-for-good/open-data">Ookla for Good</a>. Each tile is about 600x600 meters and carries an average download speed plus a count of how many tests were taken in each tile. For Texas in 2025 that's 535,217 tile-quarters and about 6.7 million tests across all 254 counties.</p>
 
 <h2>How the work actually split</h2>
 <ol>
-<li><strong>Get the data: SQL.</strong> Ookla publishes one Parquet file per quarter for the whole planet. DuckDB reads them straight off S3 and keeps only the Texas box and the nine columns I need. Four global files in, one 10 MB Texas file out.</li>
-<li><strong>Put each tile in a county: Python.</strong> That's a point-in-polygon problem, and geopandas does it in one line against the Census county map.</li>
+<li><strong>Get the data: SQL.</strong> This step is the E and the L in ELT: extract, load, transform. You pull the raw data out of wherever it lives (extract), park it somewhere you can work with it (load), and do the real shaping afterward (transform). Ookla publishes one Parquet file per quarter for the whole planet, which is a lot more internet than I need. So DuckDB reads those files right off S3 and only grabs the Texas tiles and the nine columns I care about. Four files covering the planet go in, and one 10 MB Texas file lands on my laptop. Steps 2 and 3 are the T.</li>
+<li><strong>Put each tile in a county: Python.</strong> Each tile comes with a point (its center) but no county. Figuring out which county a point falls inside is a spatial join, sometimes called point-in-polygon. SQL can do this too! DuckDB has a spatial extension, and so do Postgres and most warehouses. I still reach for Python here for a few reasons. geopandas reads the Census county map file directly, warns me if the two layers use different coordinate systems, and builds a spatial index on its own, so 535,000 points don't each get checked against all 254 counties. And when something looks off, I can drop the tiles on a map in a couple of lines and see it. The join itself is one line, and it ran in about 15 seconds.</li>
 <li><strong>Compute the medians: both.</strong> This is the race.</li>
 <li><strong>Prove they match: Python.</strong> A small script runs both versions and fails loudly if they disagree. They agree on all 1,016 county-quarter rows.</li>
 </ol>
-<p>Notice nobody won every step. Moving and shrinking data is SQL's home turf. Geometry, gluing steps together and checking the work is where Python shines.</p>
+<p>Notice neither language won every step. Moving and shrinking data is SQL's bread and butter. Geometry, gluing steps together and checking the work is where Python shines.</p>
 
 <h2>Two medians, not one</h2>
 <p>Here's the twist that made this fun. "Median speed by county" sounds like one number, and it's really two.</p>
@@ -85,7 +85,7 @@ tiles = tiles.<span class="tk-f">sort_values</span>(keys + [<span class="tk-s">"
 running = tiles.<span class="tk-f">groupby</span>(keys)[<span class="tk-s">"tests"</span>].<span class="tk-f">cumsum</span>()
 total = tiles.<span class="tk-f">groupby</span>(keys)[<span class="tk-s">"tests"</span>].<span class="tk-f">transform</span>(<span class="tk-s">"sum"</span>)
 out[<span class="tk-s">"median_test"</span>] = tiles[running &gt;= total / <span class="tk-n">2</span>].<span class="tk-f">groupby</span>(keys)[<span class="tk-s">"mbps"</span>].<span class="tk-f">min</span>()</code></pre>
-<p>Which one reads better depends on who's reading. The SQL reads like a description of the answer. The pandas reads like a recipe.</p>
+<p>Which one reads better? SQL reads like a description of the answer, while pandas reads more like a recipe.</p>
 
 <h2>What the two medians said</h2>
 <table class="data">
@@ -97,7 +97,65 @@ out[<span class="tk-s">"median_test"</span>] = tiles[running &gt;= total / <span
 <tr><td>Q4 2025</td><td>309 Mbps</td><td>401 Mbps</td></tr>
 </tbody>
 </table>
-<p>Same data, same quarter, and a 92 Mbps gap in Q4 just from asking a slightly different question. Busy tiles tend to be in town, and town tends to have faster service. Across Texas in Q4, tiles with a single test had a median of 145 Mbps. Tiles with 20 or more tests came in at 409 Mbps.</p>
+<p>Same data, same quarter, and a 92 Mbps gap in Q4 just from asking a slightly different question. Busy tiles tend to be in urban or suburban strata, and those strata tend to have faster service. Across Texas in Q4, tiles with a single test had a median of 145 Mbps. Tiles with 20 or more tests came in at 409 Mbps.</p>
+
+<figure class="figure">
+<h3>Where Texas tiles actually land</h3>
+<p class="sub">Fixed tiles by average download speed, Q4 2025, 50 Mbps bins</p>
+<div class="chart hist-anim" id="hist-chart"><svg viewBox="0 0 720 340" role="img" aria-labelledby="hs-t"><title id="hs-t">Histogram of 136,555 Texas fixed tiles in Q4 2025 by average download speed, in 50 Mbps bins. The 10th percentile is 49 Mbps, the middle tile 309 Mbps and the middle test 401 Mbps.</title>
+<line x1="56" x2="700" y1="300.0" y2="300.0" stroke="#2A2E33"/>
+<text x="48" y="304.0" font-size="11" fill="#8E9499" text-anchor="end">0</text>
+<line x1="56" x2="700" y1="270.3" y2="270.3" stroke="#2A2E33"/>
+<text x="48" y="274.3" font-size="11" fill="#8E9499" text-anchor="end">2k</text>
+<line x1="56" x2="700" y1="240.6" y2="240.6" stroke="#2A2E33"/>
+<text x="48" y="244.6" font-size="11" fill="#8E9499" text-anchor="end">4k</text>
+<line x1="56" x2="700" y1="210.9" y2="210.9" stroke="#2A2E33"/>
+<text x="48" y="214.9" font-size="11" fill="#8E9499" text-anchor="end">6k</text>
+<line x1="56" x2="700" y1="181.1" y2="181.1" stroke="#2A2E33"/>
+<text x="48" y="185.1" font-size="11" fill="#8E9499" text-anchor="end">8k</text>
+<line x1="56" x2="700" y1="151.4" y2="151.4" stroke="#2A2E33"/>
+<text x="48" y="155.4" font-size="11" fill="#8E9499" text-anchor="end">10k</text>
+<line x1="56" x2="700" y1="121.7" y2="121.7" stroke="#2A2E33"/>
+<text x="48" y="125.7" font-size="11" fill="#8E9499" text-anchor="end">12k</text>
+<line x1="56" x2="700" y1="92.0" y2="92.0" stroke="#2A2E33"/>
+<text x="48" y="96.0" font-size="11" fill="#8E9499" text-anchor="end">14k</text>
+<g class="hist-bar" style="--i:0"><rect x="57.0" y="94.1" width="28.7" height="205.9" rx="3" fill="#33A6B8" fill-opacity="0.75"/><rect x="57.0" y="92" width="28.7" height="208" fill="transparent"/><title>0-50 Mbps: 13,857 tiles</title></g>
+<g class="hist-bar" style="--i:1"><rect x="87.7" y="98.6" width="28.7" height="201.4" rx="3" fill="#4A5056"/><rect x="87.7" y="92" width="28.7" height="208" fill="transparent"/><title>50-100 Mbps: 13,553 tiles</title></g>
+<g class="hist-bar" style="--i:2"><rect x="118.3" y="141.4" width="28.7" height="158.6" rx="3" fill="#4A5056"/><rect x="118.3" y="92" width="28.7" height="208" fill="transparent"/><title>100-150 Mbps: 10,675 tiles</title></g>
+<g class="hist-bar" style="--i:3"><rect x="149.0" y="166.9" width="28.7" height="133.1" rx="3" fill="#4A5056"/><rect x="149.0" y="92" width="28.7" height="208" fill="transparent"/><title>150-200 Mbps: 8,956 tiles</title></g>
+<g class="hist-bar" style="--i:4"><rect x="179.7" y="165.6" width="28.7" height="134.4" rx="3" fill="#4A5056"/><rect x="179.7" y="92" width="28.7" height="208" fill="transparent"/><title>200-250 Mbps: 9,045 tiles</title></g>
+<g class="hist-bar" style="--i:5"><rect x="210.3" y="151.3" width="28.7" height="148.7" rx="3" fill="#4A5056"/><rect x="210.3" y="92" width="28.7" height="208" fill="transparent"/><title>250-300 Mbps: 10,011 tiles</title></g>
+<g class="hist-bar" style="--i:6"><rect x="241.0" y="130.2" width="28.7" height="169.8" rx="3" fill="#4A5056"/><rect x="241.0" y="92" width="28.7" height="208" fill="transparent"/><title>300-350 Mbps: 11,430 tiles</title></g>
+<g class="hist-bar" style="--i:7"><rect x="271.7" y="127.9" width="28.7" height="172.1" rx="3" fill="#4A5056"/><rect x="271.7" y="92" width="28.7" height="208" fill="transparent"/><title>350-400 Mbps: 11,583 tiles</title></g>
+<g class="hist-bar" style="--i:8"><rect x="302.3" y="132.0" width="28.7" height="168.0" rx="3" fill="#4A5056"/><rect x="302.3" y="92" width="28.7" height="208" fill="transparent"/><title>400-450 Mbps: 11,307 tiles</title></g>
+<g class="hist-bar" style="--i:9"><rect x="333.0" y="151.2" width="28.7" height="148.8" rx="3" fill="#4A5056"/><rect x="333.0" y="92" width="28.7" height="208" fill="transparent"/><title>450-500 Mbps: 10,013 tiles</title></g>
+<g class="hist-bar" style="--i:10"><rect x="363.7" y="186.8" width="28.7" height="113.2" rx="3" fill="#4A5056"/><rect x="363.7" y="92" width="28.7" height="208" fill="transparent"/><title>500-550 Mbps: 7,616 tiles</title></g>
+<g class="hist-bar" style="--i:11"><rect x="394.3" y="218.4" width="28.7" height="81.6" rx="3" fill="#4A5056"/><rect x="394.3" y="92" width="28.7" height="208" fill="transparent"/><title>550-600 Mbps: 5,491 tiles</title></g>
+<g class="hist-bar" style="--i:12"><rect x="425.0" y="243.0" width="28.7" height="57.0" rx="3" fill="#4A5056"/><rect x="425.0" y="92" width="28.7" height="208" fill="transparent"/><title>600-650 Mbps: 3,836 tiles</title></g>
+<g class="hist-bar" style="--i:13"><rect x="455.7" y="260.6" width="28.7" height="39.4" rx="3" fill="#4A5056"/><rect x="455.7" y="92" width="28.7" height="208" fill="transparent"/><title>650-700 Mbps: 2,653 tiles</title></g>
+<g class="hist-bar" style="--i:14"><rect x="486.3" y="273.7" width="28.7" height="26.3" rx="3" fill="#4A5056"/><rect x="486.3" y="92" width="28.7" height="208" fill="transparent"/><title>700-750 Mbps: 1,770 tiles</title></g>
+<g class="hist-bar" style="--i:15"><rect x="517.0" y="280.5" width="28.7" height="19.5" rx="3" fill="#4A5056"/><rect x="517.0" y="92" width="28.7" height="208" fill="transparent"/><title>750-800 Mbps: 1,310 tiles</title></g>
+<g class="hist-bar" style="--i:16"><rect x="547.7" y="287.1" width="28.7" height="12.9" rx="3" fill="#4A5056"/><rect x="547.7" y="92" width="28.7" height="208" fill="transparent"/><title>800-850 Mbps: 867 tiles</title></g>
+<g class="hist-bar" style="--i:17"><rect x="578.3" y="290.2" width="28.7" height="9.8" rx="3" fill="#4A5056"/><rect x="578.3" y="92" width="28.7" height="208" fill="transparent"/><title>850-900 Mbps: 657 tiles</title></g>
+<g class="hist-bar" style="--i:18"><rect x="609.0" y="290.3" width="28.7" height="9.7" rx="3" fill="#4A5056"/><rect x="609.0" y="92" width="28.7" height="208" fill="transparent"/><title>900-950 Mbps: 654 tiles</title></g>
+<g class="hist-bar" style="--i:19"><rect x="639.7" y="295.1" width="28.7" height="4.9" rx="3" fill="#4A5056"/><rect x="639.7" y="92" width="28.7" height="208" fill="transparent"/><title>950-1000 Mbps: 333 tiles</title></g>
+<g class="hist-bar" style="--i:20"><rect x="670.3" y="286.1" width="28.7" height="13.9" rx="3" fill="#4A5056"/><rect x="670.3" y="92" width="28.7" height="208" fill="transparent"/><title>1,000+ Mbps: 938 tiles</title></g>
+<text x="56.0" y="318" font-size="11" fill="#8E9499" text-anchor="middle">0</text>
+<text x="178.7" y="318" font-size="11" fill="#8E9499" text-anchor="middle">200</text>
+<text x="301.3" y="318" font-size="11" fill="#8E9499" text-anchor="middle">400</text>
+<text x="424.0" y="318" font-size="11" fill="#8E9499" text-anchor="middle">600</text>
+<text x="546.7" y="318" font-size="11" fill="#8E9499" text-anchor="middle">800</text>
+<text x="669.3" y="318" font-size="11" fill="#8E9499" text-anchor="middle">1,000+</text>
+<text x="700" y="336" font-size="11" fill="#8E9499" text-anchor="end">average download per tile, Mbps</text>
+<text x="48" y="82" font-size="11" fill="#8E9499" text-anchor="end">tiles</text>
+<g class="hist-mark hist-p10"><line x1="86.3" x2="86.3" y1="24" y2="300" stroke="#33A6B8" stroke-width="2" stroke-dasharray="4 4"/><text x="92.3" y="22" font-size="12" fill="#ECEEEF">10th percentile 49 <tspan fill="#8E9499">Mbps</tspan></text><circle cx="86.3" cy="18" r="4" fill="#33A6B8"/></g>
+<g class="hist-mark hist-med"><line x1="245.7" x2="245.7" y1="46" y2="300" stroke="#A9C4A1" stroke-width="2"/><text x="251.7" y="44" font-size="12" fill="#ECEEEF">Middle tile 309 <tspan fill="#8E9499">Mbps</tspan></text><circle cx="245.7" cy="40" r="4" fill="#A9C4A1"/></g>
+<g class="hist-mark hist-test"><line x1="302.2" x2="302.2" y1="68" y2="300" stroke="#D0912A" stroke-width="2" stroke-dasharray="8 4"/><text x="308.2" y="66" font-size="12" fill="#ECEEEF">Middle test 401 <tspan fill="#8E9499">Mbps</tspan></text><circle cx="302.2" cy="62" r="4" fill="#D0912A"/></g>
+<line x1="56" x2="700" y1="300" y2="300" stroke="#3A3F45"/>
+</svg></div>
+<button class="pct-replay hist-replay" type="button" hidden>Replay</button>
+<figcaption>One tile in ten averages under 50 Mbps (the teal bar). The middle tile sits at 309 Mbps, and the middle test, which leans toward busy tiles, sits at 401. Hover a bar for its count. Source: Speedtest&reg; by Ookla&reg; open data via Ookla for Good.</figcaption>
+</figure>
 
 <figure class="figure">
 <h3>The middle tile and the middle test can tell very different stories</h3>
@@ -117,40 +175,40 @@ out[<span class="tk-s">"median_test"</span>] = tiles[running &gt;= total / <span
 <text x="591.7" y="344" font-size="12" fill="#8E9499" text-anchor="middle">500</text>
 <line x1="680.0" x2="680.0" y1="32" y2="326" stroke="#2A2E33" stroke-width="1"/>
 <text x="680.0" y="344" font-size="12" fill="#8E9499" text-anchor="middle">600</text>
-<circle cx="156" cy="16" r="6" fill="#BD8019"/><text x="168" y="20" font-size="13" fill="#C9CDD0">Middle tile</text>
-<rect x="280" y="10" width="12" height="12" rx="2" fill="#1E9CBF" transform="rotate(45 286 16)"/><text x="300" y="20" font-size="13" fill="#C9CDD0">Middle test</text>
+<circle cx="156" cy="16" r="6" fill="#A9C4A1"/><text x="168" y="20" font-size="13" fill="#C9CDD0">Middle tile</text>
+<rect x="280" y="10" width="12" height="12" rx="2" fill="#D0912A" transform="rotate(45 286 16)"/><text x="300" y="20" font-size="13" fill="#C9CDD0">Middle test</text>
 <text x="136" y="64" font-size="13" fill="#ECEEEF" font-weight="600" text-anchor="end">Texas (all tiles)</text>
 <line x1="423.2" x2="504.6" y1="60" y2="60" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
-<g class="dot"><circle cx="423.2" cy="60" r="12" fill="transparent"/><circle cx="423.2" cy="60" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Texas (all tiles): middle tile 309 Mbps</title></g>
-<g class="dot"><rect x="492.6" y="48" width="24" height="24" fill="transparent"/><rect x="498.6" y="54" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 504.6 60)"/><title>Texas (all tiles): middle test 401 Mbps</title></g>
+<g class="dot"><circle cx="423.2" cy="60" r="12" fill="transparent"/><circle cx="423.2" cy="60" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Texas (all tiles): middle tile 309 Mbps</title></g>
+<g class="dot"><rect x="492.6" y="48" width="24" height="24" fill="transparent"/><rect x="498.6" y="54" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 504.6 60)"/><title>Texas (all tiles): middle test 401 Mbps</title></g>
 <text x="411.2" y="64" font-size="12" fill="#8E9499" text-anchor="end">309</text>
 <text x="516.6" y="64" font-size="12" fill="#8E9499">401</text>
 <text x="136" y="104" font-size="13" fill="#ECEEEF" font-weight="400" text-anchor="end">Harris</text>
 <line x1="493.2" x2="511.9" y1="100" y2="100" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
-<g class="dot"><circle cx="493.2" cy="100" r="12" fill="transparent"/><circle cx="493.2" cy="100" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Harris: middle tile 388 Mbps</title></g>
-<g class="dot"><rect x="499.9" y="88" width="24" height="24" fill="transparent"/><rect x="505.9" y="94" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 511.9 100)"/><title>Harris: middle test 410 Mbps</title></g>
+<g class="dot"><circle cx="493.2" cy="100" r="12" fill="transparent"/><circle cx="493.2" cy="100" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Harris: middle tile 388 Mbps</title></g>
+<g class="dot"><rect x="499.9" y="88" width="24" height="24" fill="transparent"/><rect x="505.9" y="94" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 511.9 100)"/><title>Harris: middle test 410 Mbps</title></g>
 <text x="136" y="144" font-size="13" fill="#ECEEEF" font-weight="400" text-anchor="end">Dallas</text>
 <line x1="506.8" x2="515.1" y1="140" y2="140" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
-<g class="dot"><circle cx="506.8" cy="140" r="12" fill="transparent"/><circle cx="506.8" cy="140" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Dallas: middle tile 404 Mbps</title></g>
-<g class="dot"><rect x="503.1" y="128" width="24" height="24" fill="transparent"/><rect x="509.1" y="134" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 515.1 140)"/><title>Dallas: middle test 413 Mbps</title></g>
+<g class="dot"><circle cx="506.8" cy="140" r="12" fill="transparent"/><circle cx="506.8" cy="140" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Dallas: middle tile 404 Mbps</title></g>
+<g class="dot"><rect x="503.1" y="128" width="24" height="24" fill="transparent"/><rect x="509.1" y="134" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 515.1 140)"/><title>Dallas: middle test 413 Mbps</title></g>
 <text x="136" y="184" font-size="13" fill="#ECEEEF" font-weight="400" text-anchor="end">Bexar</text>
 <line x1="500.5" x2="526.5" y1="180" y2="180" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
-<g class="dot"><circle cx="500.5" cy="180" r="12" fill="transparent"/><circle cx="500.5" cy="180" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Bexar: middle tile 397 Mbps</title></g>
-<g class="dot"><rect x="514.5" y="168" width="24" height="24" fill="transparent"/><rect x="520.5" y="174" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 526.5 180)"/><title>Bexar: middle test 426 Mbps</title></g>
+<g class="dot"><circle cx="500.5" cy="180" r="12" fill="transparent"/><circle cx="500.5" cy="180" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Bexar: middle tile 397 Mbps</title></g>
+<g class="dot"><rect x="514.5" y="168" width="24" height="24" fill="transparent"/><rect x="520.5" y="174" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 526.5 180)"/><title>Bexar: middle test 426 Mbps</title></g>
 <text x="136" y="224" font-size="13" fill="#ECEEEF" font-weight="400" text-anchor="end">Travis</text>
 <line x1="482.6" x2="512.3" y1="220" y2="220" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
-<g class="dot"><circle cx="482.6" cy="220" r="12" fill="transparent"/><circle cx="482.6" cy="220" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Travis: middle tile 377 Mbps</title></g>
-<g class="dot"><rect x="500.3" y="208" width="24" height="24" fill="transparent"/><rect x="506.3" y="214" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 512.3 220)"/><title>Travis: middle test 410 Mbps</title></g>
+<g class="dot"><circle cx="482.6" cy="220" r="12" fill="transparent"/><circle cx="482.6" cy="220" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Travis: middle tile 377 Mbps</title></g>
+<g class="dot"><rect x="500.3" y="208" width="24" height="24" fill="transparent"/><rect x="506.3" y="214" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 512.3 220)"/><title>Travis: middle test 410 Mbps</title></g>
 <text x="136" y="264" font-size="13" fill="#ECEEEF" font-weight="400" text-anchor="end">Falls</text>
 <line x1="232.5" x2="599.0" y1="260" y2="260" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
-<g class="dot"><circle cx="232.5" cy="260" r="12" fill="transparent"/><circle cx="232.5" cy="260" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Falls: middle tile 93 Mbps</title></g>
-<g class="dot"><rect x="587.0" y="248" width="24" height="24" fill="transparent"/><rect x="593.0" y="254" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 599.0 260)"/><title>Falls: middle test 508 Mbps</title></g>
+<g class="dot"><circle cx="232.5" cy="260" r="12" fill="transparent"/><circle cx="232.5" cy="260" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Falls: middle tile 93 Mbps</title></g>
+<g class="dot"><rect x="587.0" y="248" width="24" height="24" fill="transparent"/><rect x="593.0" y="254" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 599.0 260)"/><title>Falls: middle test 508 Mbps</title></g>
 <text x="220.5" y="264" font-size="12" fill="#8E9499" text-anchor="end">93</text>
 <text x="611.0" y="264" font-size="12" fill="#8E9499">508</text>
 <text x="136" y="304" font-size="13" fill="#ECEEEF" font-weight="400" text-anchor="end">Reeves</text>
 <line x1="205.0" x2="285.0" y1="300" y2="300" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
-<g class="dot"><circle cx="285.0" cy="300" r="12" fill="transparent"/><circle cx="285.0" cy="300" r="6" fill="#BD8019" stroke="#1B1E21" stroke-width="2"/><title>Reeves: middle tile 153 Mbps</title></g>
-<g class="dot"><rect x="193.0" y="288" width="24" height="24" fill="transparent"/><rect x="199.0" y="294" width="12" height="12" rx="2" fill="#1E9CBF" stroke="#1B1E21" stroke-width="2" transform="rotate(45 205.0 300)"/><title>Reeves: middle test 62 Mbps</title></g>
+<g class="dot"><circle cx="285.0" cy="300" r="12" fill="transparent"/><circle cx="285.0" cy="300" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Reeves: middle tile 153 Mbps</title></g>
+<g class="dot"><rect x="193.0" y="288" width="24" height="24" fill="transparent"/><rect x="199.0" y="294" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 205.0 300)"/><title>Reeves: middle test 62 Mbps</title></g>
 <text x="193.0" y="304" font-size="12" fill="#8E9499" text-anchor="end">62</text>
 <text x="297.0" y="304" font-size="12" fill="#8E9499">153</text>
 </svg></div>
@@ -174,7 +232,7 @@ out[<span class="tk-s">"median_test"</span>] = tiles[running &gt;= total / <span
 <h2>Reeves County: one tile, two devices</h2>
 <p>In Q4, Reeves County had 2,124 tests spread across 243 tiles. One of those tiles had 1,044 of them, almost half the county, from just 2 devices. That tile averaged 62 Mbps.</p>
 <p>So the middle test for all of Reeves County is 62 Mbps, because that one tile sits right on the halfway mark. The middle tile says 153 Mbps.</p>
-<p>I don't know who's behind those 1,044 tests, and the data can't tell me. What I do know is that a test-weighted median listens to whoever talks the most. This is why I check the <code>devices</code> column next to <code>tests</code> before I trust a weighted number in a small area.</p>
+<p>I don't know who's behind those 1,044 tests, and the data can't tell me. What I do know is that a test-weighted median listens to whoever talks the most. This is why I check the <code>devices</code> column next to <code>tests</code> before I trust a weighted number in a small area. There are techniques used to ensure these situations don't impact final results of analysis, but for the sake of this conversation, let's leave it here.</p>
 
 <h2>Falls County: the opposite problem</h2>
 <p>Falls County flips it around. The middle tile is 93 Mbps and the middle test is 508 Mbps.</p>
@@ -190,7 +248,7 @@ out[<span class="tk-s">"median_test"</span>] = tiles[running &gt;= total / <span
 <p>Everything is in the <a href="https://github.com/davenmook/data-stories/tree/main/sql-or-python">data-stories repo</a>: the download script, the county join, both versions and the check. Run it yourself and tell me if I got something wrong!</p>
 <p>Next week: how many speed tests is enough to trust a number at all? Reeves County is going to come up again.</p>
 
-<p class="source"><small>Speedtest&reg; by Ookla&reg; Global Fixed and Mobile Network Performance Maps. Based on analysis by Ookla of Speedtest Intelligence&reg; data for Q1 to Q4 2025. Provided by Ookla and accessed 13 October 2026. Ookla trademarks used under license and reprinted with permission. Data licensed CC BY-NC-SA 4.0. County boundaries: US Census Bureau.</small></p>
+<p class="source"><small>Speedtest&reg; by Ookla&reg; Global Fixed and Mobile Network Performance Maps, from <a href="https://www.ookla.com/ookla-for-good/open-data">Ookla for Good</a> via the <a href="https://registry.opendata.aws/speedtest-global-performance">AWS Open Data Registry</a>. Based on analysis by Ookla of Speedtest Intelligence&reg; data for Q1 to Q4 2025. Provided by Ookla and accessed 13 October 2026. Ookla trademarks used under license and reprinted with permission. Data licensed CC BY-NC-SA 4.0. County boundaries: US Census Bureau.</small></p>
 </article>
 
 <section class="next" aria-label="More notes">
@@ -214,5 +272,14 @@ out[<span class="tk-s">"median_test"</span>] = tiles[running &gt;= total / <span
 </div>
 <div class="wrap footer-fine">© 2026 Dave Noel · Views are my own · Data from public sources, credited on every chart.</div>
 </footer>
+<script>
+(function(){var c=document.getElementById('hist-chart');if(!c)return;
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
+var b=c.parentNode.querySelector('.hist-replay');c.classList.add('hist-wait');
+function play(){c.classList.remove('hist-play');void c.getBoundingClientRect();c.classList.add('hist-play');}
+var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){io.disconnect();play();if(b)b.hidden=false;}},{threshold:.35});
+io.observe(c);if(b)b.addEventListener('click',play);
+})();
+</script>
 </body>
 </html>
