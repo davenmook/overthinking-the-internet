@@ -21,7 +21,7 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/bricolage-grotesque-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <script>try{if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
-<link rel="stylesheet" href="../assets/css/site.css?v=20261015a">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261015b">
 <!-- PostHog: product analytics, web analytics, session replay, experiments -->
 <script async src="https://us-assets.i.posthog.com/static/array.js" onload="window.posthog&&posthog.init('phc_wPRDMiWxnPrd356Rk4mPPCwphxNJaoqS666aZrGCzYdj',{api_host:'https://us.i.posthog.com',person_profiles:'identified_only'})"></script>
 </head>
@@ -40,31 +40,28 @@
 </nav></header>
 <main class="wrap">
 <div class="article-head">
-<span class="status">In progress</span>
+<div class="eyebrow">Data story · Houston</div>
 <h1>The data that <em>isn't there.</em></h1>
-<p class="dek">In July 2024, Hurricane Beryl knocked out power across the Houston area. I live here. I want to know: did the internet notice, and can public data show it?</p>
-<div class="byline"><img src="../assets/img/avatar-ring.png" alt="" width="36" height="36"><span>Dave Noel · working in public on GitHub</span></div>
+<p class="dek">When Hurricane Beryl knocked out power across the Houston area in July 2024, did the internet notice? One public dataset saw it clearly. Two others barely blinked.</p>
+<div class="byline"><img src="../assets/img/avatar-ring.png" alt="" width="36" height="36"><span>Dave Noel · 8 min read</span></div>
 </div>
 
 <article class="prose">
 <h2>The question</h2>
 <p>Most data stories start with what's in the dataset. This one starts with what's missing. When the power goes out, people stop running speed tests, phones stop streaming, and home routers go dark. The absence of data becomes a signal of its own.</p>
-<p>The question I'm chasing: <strong>using only public data, can you see where and when an outage hit, and how quickly connectivity came back?</strong></p>
+<p>I live in Houston, so Beryl wasn't abstract for me. The question I wanted to answer: <strong>using only public data, can you see when an outage hit and how quickly connectivity came back?</strong></p>
 
-<h2>The plan</h2>
+<h2>What I looked at</h2>
+<p>Three public sources, each measuring something different:</p>
 <ul>
-<li><strong>Internet outage signals</strong> from IODA, Georgia Tech's Internet Outage Detection and Analysis project, which tracks regional connectivity in near real time.</li>
-<li><strong>Cell site outage reports</strong> from the FCC's Disaster Information Reporting System, which publishes the share of cell sites out of service by county during major storms.</li>
-<li><strong>Storm records</strong> from NOAA's Storm Events database, for the when and where.</li>
-<li><strong>Speed test counts</strong> from Ookla's open data, as a second check. It comes in quarterly tiles, so a storm that lasted days may get averaged away. Finding out is part of the fun.</li>
+<li><strong>Active probing</strong> from <a href="https://ioda.inetintel.cc.gatech.edu">IODA</a>, Georgia Tech's Internet Outage Detection and Analysis project. Every ten minutes it pings blocks of internet addresses and counts how many answer.</li>
+<li><strong>Routing data (BGP)</strong>, also from IODA. This is the internet's address book: which networks say they can be reached.</li>
+<li><strong>Speed test counts</strong> from <a href="https://github.com/teamookla/ookla-open-data">Ookla's open data</a>, which comes in quarterly tiles across Texas.</li>
 </ul>
+<p>To keep myself honest, every comparison lines 2024 up against the same weeks or quarters of 2023, a year with no hurricane. July is peak travel season in Houston, so a dip on its own doesn't prove much.</p>
 
-<h2>How I'll keep myself honest</h2>
-<p>July is also peak summer travel in Houston, so fewer tests could just mean fewer people in town. I'll compare the same quarters in a year without a major storm before claiming anything. If the signal isn't there, that's the story, and I'll write it up that way.</p>
-
-
-<h2>First look: the internet noticed</h2>
-<p>IODA pings blocks of internet addresses across Texas every ten minutes and counts how many answer. On a normal July day, about 76,000 of them do. Then Beryl came ashore around 4 a.m. on July 8.</p>
+<h2>The internet noticed</h2>
+<p>On a normal July day, about 76,000 blocks of Texas addresses answer IODA's pings. Then Beryl came ashore near Matagorda Bay around 4 a.m. on July 8.</p>
 
 <figure class="figure">
 <h3>Texas networks answering IODA's pings, July 2024</h3>
@@ -83,14 +80,66 @@
 <figcaption>Source: IODA (Internet Outage Detection and Analysis), Georgia Tech, active probing signal for Texas. Statewide numbers. The short dips on Jul 6, 2024 and Jul 12, 2023 look like measurement blips, and so may the deeper one on the afternoon of Jul 9; I'm still checking.</figcaption>
 </figure>
 
-<p>By midmorning, about one in ten of those blocks had gone quiet, and it stayed that way for a day and a half. Getting back to 99% took a full week. The same days in 2023 barely moved.</p>
-<p>One more thing jumped out. The routing data (BGP, the internet's address book) hardly budged. The networks were still telling the internet they existed, even when nobody behind them could get online. That's the data that isn't there, in one chart.</p>
-<p>Next up: the FCC's cell site outage reports and the speed test counts, to see whether they tell the same story.</p>
+<p>By midmorning, about one in ten of those blocks had gone quiet, and it stayed that way for a day and a half. Recovery was slow and steady: back to 95% by Wednesday afternoon, 98% by Friday night, and 99% the following Monday, a full week after landfall. The same days in 2023 barely moved.</p>
 
 <div class="callout">
-<span class="eyebrow">Follow along</span>
-<p>The code, data sources, and notes are going up on <a href="https://github.com/davenmook">GitHub</a> as I work. This page will become the full story when the analysis is done.</p>
+<span class="eyebrow">How I got hourly data</span>
+<p>IODA measures every ten minutes. I converted each year to a percent of its own normal (the median of July 1–7), took the median of each hour's six readings, then applied a 3-hour rolling median. That smooths out one-off glitches while keeping drops that last several hours. The result is one point per hour, which is why you can see the drop start around 4 or 5 a.m.</p>
 </div>
+
+<h2>The address book didn't flinch</h2>
+<p>Here's the part that made this story click for me. The routing data hardly budged the whole week. The networks were still telling the internet they existed, even while the homes and businesses behind them were dark.</p>
+<p>That's the data that isn't there. If you only watched routing, Beryl would look like a quiet week. You only see the outage when you knock on the door and nobody answers.</p>
+
+<h2>The speed tests went up?</h2>
+<p>This is where I expected the clearest signal, and got a plot twist instead. In the 11 counties around Houston, people ran 12% more speed tests in Q3 2024 than in Q2. That sounds like Beryl: the power comes back and everyone checks whether their internet survived.</p>
+
+<figure class="figure">
+<h3>Speed tests from Q2 to Q3: Houston area vs the rest of Texas</h3>
+<p class="sub">Change in the number of fixed speed tests from April–June to July–September</p>
+<div class="legend"><span><i style="background:#33A6B8"></i>Houston area (11 counties)</span><span><i style="background:#6B7177"></i>Rest of Texas</span></div>
+<div class="chart st-anim" id="st-chart"><svg viewBox="0 0 720 270" role="img" aria-labelledby="st-t"><title id="st-t">Change in speed tests from Q2 to Q3. 2023: Houston area +2.1 percent, rest of Texas minus 8.2 percent. 2024: Houston area +12.1 percent, rest of Texas +1.1 percent.</title>
+<g class="st-ax"><line x1="70" y1="215.7" x2="690" y2="215.7" stroke="#2A2E33"/><text x="62" y="219.7" font-size="11" fill="#8E9499" text-anchor="end">-10%</text><line x1="70" y1="180.0" x2="690" y2="180.0" stroke="#2A2E33"/><text x="62" y="184.0" font-size="11" fill="#8E9499" text-anchor="end">-5%</text><line x1="70" y1="144.3" x2="690" y2="144.3" stroke="#8E9499"/><text x="62" y="148.3" font-size="11" fill="#8E9499" text-anchor="end">+0%</text><line x1="70" y1="108.6" x2="690" y2="108.6" stroke="#2A2E33"/><text x="62" y="112.6" font-size="11" fill="#8E9499" text-anchor="end">+5%</text><line x1="70" y1="72.9" x2="690" y2="72.9" stroke="#2A2E33"/><text x="62" y="76.9" font-size="11" fill="#8E9499" text-anchor="end">+10%</text><line x1="70" y1="37.1" x2="690" y2="37.1" stroke="#2A2E33"/><text x="62" y="41.1" font-size="11" fill="#8E9499" text-anchor="end">+15%</text></g>
+<g class="st-bar" style="--i:0"><rect x="104" y="129.3" width="80" height="15.0" rx="3" fill="#33A6B8" style="transform-origin:144.0px 144.3px"><title>Houston area, 2023: +2.1% tests Q2 to Q3</title></rect><text class="st-val" x="144.0" y="121.3" font-size="13" fill="#ECEEEF" text-anchor="middle">+2.1%</text></g><g class="st-bar" style="--i:1"><rect x="196" y="144.3" width="80" height="58.6" rx="3" fill="#6B7177" style="transform-origin:236.0px 144.3px"><title>Rest of Texas, 2023: -8.2% tests Q2 to Q3</title></rect><text class="st-val" x="236.0" y="220.9" font-size="13" fill="#ECEEEF" text-anchor="middle">-8.2%</text></g><text class="st-ax" x="190" y="256" font-size="12" fill="#8E9499" text-anchor="middle">2023 (no hurricane)</text><g class="st-bar" style="--i:3"><rect x="414" y="57.9" width="80" height="86.4" rx="3" fill="#33A6B8" style="transform-origin:454.0px 144.3px"><title>Houston area, 2024: +12.1% tests Q2 to Q3</title></rect><text class="st-val" x="454.0" y="49.9" font-size="13" fill="#ECEEEF" text-anchor="middle">+12.1%</text></g><g class="st-bar" style="--i:4"><rect x="506" y="136.4" width="80" height="7.9" rx="3" fill="#6B7177" style="transform-origin:546.0px 144.3px"><title>Rest of Texas, 2024: +1.1% tests Q2 to Q3</title></rect><text class="st-val" x="546.0" y="128.4" font-size="13" fill="#ECEEEF" text-anchor="middle">+1.1%</text></g><text class="st-ax" x="500" y="256" font-size="12" fill="#8E9499" text-anchor="middle">2024 (Beryl hits Jul 8)</text>
+</svg></div>
+<button class="pct-replay st-replay" type="button" hidden>Replay</button>
+<figcaption>Source: Speedtest® by Ookla® Global Fixed and Mobile Network Performance Maps, CC BY-NC-SA 4.0. Houston area = Harris, Fort Bend, Montgomery, Brazoria, Galveston, Waller, Liberty, Chambers, Matagorda, Wharton and Austin counties.</figcaption>
+</figure>
+
+<p>Then I lined it up against the rest of Texas and the year before. The rest of the state swung by about 9 points between the two years too, and Houston always gains on the rest of Texas from Q2 to Q3. Once you account for both, Houston's extra growth in 2024 is less than one point.</p>
+<p>So I split the Houston numbers by speed. If Beryl had left connections slower for weeks afterward, you'd expect more tests landing in the slow tiles.</p>
+
+<figure class="figure">
+<h3>Houston area: where the Q3 speed tests landed</h3>
+<p class="sub">Change in tests from Q2 to Q3, by the tile's average download speed</p>
+<div class="legend"><span><i style="background:#6B7177"></i>2023 (no hurricane)</span><span><i style="background:#33A6B8"></i>2024 (Beryl)</span></div>
+<div class="chart st-anim" id="st2-chart" style="--step:.14s"><svg viewBox="0 0 720 280" role="img" aria-labelledby="st2-t"><title id="st2-t">Houston-area change in speed tests from Q2 to Q3 by tile speed. Under 25 Mbps: 2023 minus 3 percent, 2024 minus 11 percent. 25 to 100: minus 7 and minus 9. 100 to 250: minus 14 and minus 5. 250 to 500: plus 11 and plus 15. 500 and up: plus 29 and plus 57.</title>
+<g class="st-ax"><line x1="70" y1="240.0" x2="700" y2="240.0" stroke="#2A2E33"/><text x="62" y="244.0" font-size="11" fill="#8E9499" text-anchor="end">-20%</text><line x1="70" y1="187.5" x2="700" y2="187.5" stroke="#8E9499"/><text x="62" y="191.5" font-size="11" fill="#8E9499" text-anchor="end">+0%</text><line x1="70" y1="135.0" x2="700" y2="135.0" stroke="#2A2E33"/><text x="62" y="139.0" font-size="11" fill="#8E9499" text-anchor="end">+20%</text><line x1="70" y1="82.5" x2="700" y2="82.5" stroke="#2A2E33"/><text x="62" y="86.5" font-size="11" fill="#8E9499" text-anchor="end">+40%</text><line x1="70" y1="30.0" x2="700" y2="30.0" stroke="#2A2E33"/><text x="62" y="34.0" font-size="11" fill="#8E9499" text-anchor="end">+60%</text></g>
+<g class="st-bar" style="--i:0"><rect x="86" y="187.5" width="40" height="7.6" rx="3" fill="#6B7177" style="transform-origin:106.0px 187.5px"><title>Under 25 Mbps tiles, 2023: -2.9% (4,847 to 4,706 tests)</title></rect><text class="st-val" x="106.0" y="211.1" font-size="12" fill="#ECEEEF" text-anchor="middle">-3%</text></g><g class="st-bar" style="--i:1"><rect x="132" y="187.5" width="40" height="28.3" rx="3" fill="#33A6B8" style="transform-origin:152.0px 187.5px"><title>Under 25 Mbps tiles, 2024: -10.8% (3,048 to 2,719 tests)</title></rect><text class="st-val" x="152.0" y="231.8" font-size="12" fill="#ECEEEF" text-anchor="middle">-11%</text></g><text class="st-ax" x="130" y="264" font-size="12" fill="#8E9499" text-anchor="middle">Under 25 Mbps</text><g class="st-bar" style="--i:3"><rect x="204" y="187.5" width="40" height="17.8" rx="3" fill="#6B7177" style="transform-origin:224.0px 187.5px"><title>25-100 Mbps tiles, 2023: -6.8% (17,094 to 15,937 tests)</title></rect><text class="st-val" x="224.0" y="221.3" font-size="12" fill="#ECEEEF" text-anchor="middle">-7%</text></g><g class="st-bar" style="--i:4"><rect x="250" y="187.5" width="40" height="22.8" rx="3" fill="#33A6B8" style="transform-origin:270.0px 187.5px"><title>25-100 Mbps tiles, 2024: -8.7% (12,248 to 11,183 tests)</title></rect><text class="st-val" x="270.0" y="226.3" font-size="12" fill="#ECEEEF" text-anchor="middle">-9%</text></g><text class="st-ax" x="248" y="264" font-size="12" fill="#8E9499" text-anchor="middle">25–100 Mbps</text><g class="st-bar" style="--i:6"><rect x="322" y="187.5" width="40" height="37.8" rx="3" fill="#6B7177" style="transform-origin:342.0px 187.5px"><title>100-250 Mbps tiles, 2023: -14.4% (128,664 to 110,162 tests)</title></rect><text class="st-val" x="342.0" y="241.3" font-size="12" fill="#ECEEEF" text-anchor="middle">-14%</text></g><g class="st-bar" style="--i:7"><rect x="368" y="187.5" width="40" height="14.2" rx="3" fill="#33A6B8" style="transform-origin:388.0px 187.5px"><title>100-250 Mbps tiles, 2024: -5.4% (72,283 to 68,358 tests)</title></rect><text class="st-val" x="388.0" y="217.7" font-size="12" fill="#ECEEEF" text-anchor="middle">-5%</text></g><text class="st-ax" x="366" y="264" font-size="12" fill="#8E9499" text-anchor="middle">100–250 Mbps</text><g class="st-bar" style="--i:9"><rect x="440" y="159.4" width="40" height="28.1" rx="3" fill="#6B7177" style="transform-origin:460.0px 187.5px"><title>250-500 Mbps tiles, 2023: +10.7% (256,036 to 283,434 tests)</title></rect><text class="st-val" x="460.0" y="152.4" font-size="12" fill="#ECEEEF" text-anchor="middle">+11%</text></g><g class="st-bar" style="--i:10"><rect x="486" y="147.6" width="40" height="39.9" rx="3" fill="#33A6B8" style="transform-origin:506.0px 187.5px"><title>250-500 Mbps tiles, 2024: +15.2% (320,494 to 369,285 tests)</title></rect><text class="st-val" x="506.0" y="140.6" font-size="12" fill="#ECEEEF" text-anchor="middle">+15%</text></g><text class="st-ax" x="484" y="264" font-size="12" fill="#8E9499" text-anchor="middle">250–500 Mbps</text><g class="st-bar" style="--i:12"><rect x="558" y="110.8" width="40" height="76.7" rx="3" fill="#6B7177" style="transform-origin:578.0px 187.5px"><title>500+ Mbps tiles, 2023: +29.2% (4,220 to 5,451 tests)</title></rect><text class="st-val" x="578.0" y="103.8" font-size="12" fill="#ECEEEF" text-anchor="middle">+29%</text></g><g class="st-bar" style="--i:13"><rect x="604" y="38.4" width="40" height="149.1" rx="3" fill="#33A6B8" style="transform-origin:624.0px 187.5px"><title>500+ Mbps tiles, 2024: +56.8% (13,396 to 21,005 tests)</title></rect><text class="st-val" x="624.0" y="31.4" font-size="12" fill="#ECEEEF" text-anchor="middle">+57%</text></g><text class="st-ax" x="602" y="264" font-size="12" fill="#8E9499" text-anchor="middle">500+ Mbps</text>
+</svg></div>
+<button class="pct-replay st2-replay" type="button" hidden>Replay</button>
+<figcaption>Source: Speedtest® by Ookla® Global Fixed and Mobile Network Performance Maps, CC BY-NC-SA 4.0. Tiles are binned by their average download speed each quarter, so a tile can move up a bin as its network gets faster. The 500+ bin is small: about 13,000 tests in Q2 2024.</figcaption>
+</figure>
+
+<p>The opposite happened. Tests in the slowest tiles (under 25 Mbps) fell 11% from Q2 to Q3 in 2024, faster than the 3% drop a year earlier. All the growth was at the fast end, where tests in 500+ Mbps tiles jumped 57%. That looks like the usual story of networks getting faster.</p>
+<p>A week-long outage simply gets lost in a three-month total. Quarterly tiles are great for comparing places and the wrong tool for timing a storm.</p>
+
+<h2>What I took from it</h2>
+<p>Match the resolution to the question. Ten-minute data showed exactly when Beryl hit and how long recovery took. Quarterly data couldn't tell you a hurricane happened at all.</p>
+<p>Absence is a signal, but only if you're measuring often enough to notice it. And "the network is up" and "people are online" are two very different statements. Routing said everything was fine. The pings said one in ten weren't home.</p>
+
+<div class="callout">
+<span class="eyebrow">Run it yourself</span>
+<p>The code, data sources and every chart are on <a href="https://github.com/davenmook/data-stories/tree/main/beryl">GitHub</a>. Raw data downloads by script, so you can rerun every number here.</p>
+</div>
+
+<h2>Sources</h2>
+<ul>
+<li><strong>IODA</strong> (Internet Outage Detection and Analysis), Georgia Tech. Active probing and BGP signals for Texas, July 2023 and July 2024, pulled from the <a href="https://api.ioda.inetintel.cc.gatech.edu/v2/">IODA API</a>. Dashboard: <a href="https://ioda.inetintel.cc.gatech.edu">ioda.inetintel.cc.gatech.edu</a></li>
+<li><strong>Speedtest® by Ookla® Global Fixed and Mobile Network Performance Maps</strong>, fixed tiles, 2023 and 2024. Based on analysis by Ookla of Speedtest Intelligence® data. CC BY-NC-SA 4.0. <a href="https://github.com/teamookla/ookla-open-data">github.com/teamookla/ookla-open-data</a> and the <a href="https://registry.opendata.aws/speedtest-global-performance">AWS Registry of Open Data</a></li>
+<li><strong>County boundaries</strong>: US Census Bureau <a href="https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html">cartographic boundary files</a>, via <a href="https://github.com/plotly/datasets">plotly/datasets</a></li>
+<li><strong>Code</strong>: every script and chart for this story is in <a href="https://github.com/davenmook/data-stories/tree/main/beryl">data-stories/beryl</a></li>
+</ul>
 </article>
 
 <aside class="follow" aria-label="Follow along">
@@ -129,6 +178,14 @@ var b=c.parentNode.querySelector('.ber-replay');c.classList.add('ber-wait');
 function play(){c.classList.remove('ber-play');void c.getBoundingClientRect();c.classList.add('ber-play');}
 new IntersectionObserver(function(e,o){if(e[0].isIntersecting){play();o.disconnect();b.hidden=false;}},{threshold:0.5}).observe(c);
 b.addEventListener('click',play);})();
+</script>
+<script>
+['st-chart','st2-chart'].forEach(function(id){var c=document.getElementById(id);if(!c)return;
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
+var b=c.parentNode.querySelector('.pct-replay');c.classList.add('st-wait');
+function play(){c.classList.remove('st-play');void c.getBoundingClientRect();c.classList.add('st-play');}
+new IntersectionObserver(function(e,o){if(e[0].isIntersecting){play();o.disconnect();b.hidden=false;}},{threshold:0.5}).observe(c);
+b.addEventListener('click',play);});
 </script>
 <script src="../assets/js/theme.js?v=20261014t" defer></script>
 </body>

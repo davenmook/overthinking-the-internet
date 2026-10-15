@@ -359,3 +359,12 @@ html[data-theme="light"] .follow { background: var(--sage-tint); border-color: #
   #ber-chart .ber-t { font-size: 16px; }
   #ber-chart .ber-tick { font-size: 14px; }
 }
+
+/* Beryl speed-test bars: grow from the zero line, one after another */
+.st-anim rect { transform-box: view-box; }
+.st-wait .st-bar rect { transform: scaleY(0); }
+.st-wait .st-val, .st-wait .st-ax { opacity: 0; }
+.st-play .st-ax { animation: pct-fade .4s ease-out forwards; }
+.st-play .st-bar rect { animation: st-grow .7s cubic-bezier(.2,.8,.2,1) calc(.3s + var(--i) * var(--step, .35s)) forwards; }
+.st-play .st-val { animation: pct-fade .4s ease-out calc(.8s + var(--i) * var(--step, .35s)) forwards; }
+@keyframes st-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
