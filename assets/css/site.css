@@ -345,3 +345,17 @@ html[data-theme="light"] .theme-toggle .moon { display: block; }
 .follow-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 8px; font-weight: 500; text-decoration: none; white-space: nowrap; }
 .follow-btn svg { width: 12px; height: 12px; }
 html[data-theme="light"] .follow { background: var(--sage-tint); border-color: #D3E0CE; }
+
+/* Beryl reachability chart: 2023 baseline, then 2024 draws left to right like time passing */
+.ber-wait .ber-line { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.ber-wait .ber-gap, .ber-wait .ber-land, .ber-wait .ber-note, .ber-wait .ber-ax { opacity: 0; }
+.ber-play .ber-ax { animation: pct-fade .4s ease-out forwards; }
+.ber-play .ber-2023 { animation: ber-draw 1.2s ease-out .1s forwards; }
+.ber-play .ber-2024 { animation: ber-draw 3.2s linear .3s forwards; }
+.ber-play .ber-land, .ber-play .ber-note { animation: pct-fade .5s ease-out var(--at) forwards; }
+.ber-play .ber-gap { animation: pct-fade .8s ease-out 3.5s forwards; }
+@keyframes ber-draw { to { stroke-dashoffset: 0; } }
+@media (max-width: 600px) {
+  #ber-chart .ber-t { font-size: 16px; }
+  #ber-chart .ber-tick { font-size: 14px; }
+}
