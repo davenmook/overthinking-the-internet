@@ -368,3 +368,7 @@ html[data-theme="light"] .follow { background: var(--sage-tint); border-color: #
 .st-play .st-bar rect { animation: st-grow .7s cubic-bezier(.2,.8,.2,1) calc(.3s + var(--i) * var(--step, .35s)) forwards; }
 .st-play .st-val { animation: pct-fade .4s ease-out calc(.8s + var(--i) * var(--step, .35s)) forwards; }
 @keyframes st-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+/* Notes and stories: one centered reading column, so the extra width splits evenly left and right */
+.reading .article-head, .reading .prose, .reading .follow, .reading .next { max-width: 760px; margin-inline: auto; }
+.reading .follow { margin-bottom: 56px; }
