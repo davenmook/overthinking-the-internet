@@ -312,3 +312,36 @@ html[data-theme="light"] .pct-dot { fill: color-mix(in srgb, #7FA676 calc(var(--
 .theme-toggle .moon { display: none; }
 html[data-theme="light"] .theme-toggle .sun { display: none; }
 html[data-theme="light"] .theme-toggle .moon { display: block; }
+
+/* County picker (Percentiles post) */
+.cc-pickers { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 14px; margin: 2px 0 18px; }
+.cc-pickers label { display: flex; flex-direction: column; gap: 6px; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.cc-pickers select { appearance: none; -webkit-appearance: none; min-width: 190px; padding: 9px 36px 9px 12px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%238E9499' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center; color: var(--fg); font: 15px/1.3 var(--body); letter-spacing: 0; text-transform: none; cursor: pointer; }
+.cc-pickers select:hover { border-color: var(--sage); }
+.cc-pickers select:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+.cc-vs { padding-bottom: 10px; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.cc-pickers + .legend { margin-top: 0; }
+#pair-chart svg { min-width: 0; }
+@media (max-width: 600px) {
+  #pair-chart .cc-name { font-size: 24px; }
+  #pair-chart .cc-lab { font-size: 21px; }
+  #pair-chart .cc-tick { font-size: 19px; }
+  .cc-pickers select { min-width: 0; width: 100%; }
+  .cc-pickers label { flex: 1 1 140px; }
+  .cc-vs { display: none; }
+}
+.cc-readout { margin: 12px 0 0; font-family: var(--mono); font-size: 13px; color: var(--fg-2); }
+
+/* LinkedIn link in the nav (text + arrow, styled like the theme toggle) */
+.nav-links .nav-social { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--line-2); color: var(--sage); font-size: 15px; }
+.nav-links .nav-social svg { width: 12px; height: 12px; }
+.nav-links .nav-social:hover { border-color: var(--sage); color: var(--sage-hi); }
+
+/* Follow-along block at the end of every note and story */
+.follow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px 28px; max-width: 700px; margin: 0 0 56px; padding: 24px 26px; border-radius: 14px; background: var(--raise); border: 1px solid var(--line); }
+.follow-copy { flex: 1 1 320px; }
+.follow .eyebrow { display: block; margin-bottom: 8px; color: var(--sage); }
+.follow p { margin: 0; color: var(--fg-2); }
+.follow-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 8px; font-weight: 500; text-decoration: none; white-space: nowrap; }
+.follow-btn svg { width: 12px; height: 12px; }
+html[data-theme="light"] .follow { background: var(--sage-tint); border-color: #D3E0CE; }
