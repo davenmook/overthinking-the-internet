@@ -42,8 +42,8 @@
 <div class="article-head">
 <div class="eyebrow">Data story · Houston</div>
 <h1>The data that <em>isn't there.</em></h1>
-<p class="dek">When Hurricane Beryl knocked out power across the Houston area in July 2024, did the internet notice? One public dataset saw it clearly. Two others barely blinked.</p>
-<div class="byline"><img src="../assets/img/avatar-ring.png" alt="" width="36" height="36"><span>Dave Noel · 8 min read</span></div>
+<p class="dek">When Hurricane Beryl knocked out power across the Houston area in July 2024, did the internet notice? Some of the data saw it clearly, some barely blinked, and the phones told their own story.</p>
+<div class="byline"><img src="../assets/img/avatar-ring.png" alt="" width="36" height="36"><span>Dave Noel · 9 min read</span></div>
 </div>
 
 <article class="prose">
@@ -52,11 +52,11 @@
 <p>I live in Houston, so Beryl wasn't abstract for me. The question I wanted to answer: <strong>using only public data, can you see when an outage hit and how quickly connectivity came back?</strong></p>
 
 <h2>What I looked at</h2>
-<p>Three public sources, each measuring something different:</p>
+<p>Public sources, each measuring something different:</p>
 <ul>
 <li><strong>Active probing</strong> from <a href="https://ioda.inetintel.cc.gatech.edu">IODA</a>, Georgia Tech's Internet Outage Detection and Analysis project. Every ten minutes it pings blocks of internet addresses and counts how many answer.</li>
 <li><strong>Routing data (BGP)</strong>, also from IODA. This is the internet's address book: which networks say they can be reached.</li>
-<li><strong>Speed test counts</strong> from <a href="https://github.com/teamookla/ookla-open-data">Ookla's open data</a>, which comes in quarterly tiles across Texas.</li>
+<li><strong>Speed test counts</strong> from <a href="https://github.com/teamookla/ookla-open-data">Ookla's open data</a>, which comes in quarterly tiles across Texas, published separately for fixed broadband and mobile.</li>
 </ul>
 <p>To keep myself honest, every comparison lines 2024 up against the same weeks or quarters of 2023, a year with no hurricane. July is peak travel season in Houston, so a dip on its own doesn't prove much.</p>
 
@@ -124,9 +124,28 @@
 <p>The opposite happened. Tests in the slowest tiles (under 25 Mbps) fell 11% from Q2 to Q3 in 2024, faster than the 3% drop a year earlier. All the growth was at the fast end, where tests in 500+ Mbps tiles jumped 57%. That looks like the usual story of networks getting faster.</p>
 <p>A week-long outage simply gets lost in a three-month total. Quarterly tiles are great for comparing places and the wrong tool for timing a storm.</p>
 
+
+<h2>Phones picked up the slack</h2>
+<p>All of that was fixed broadband: home and office connections. Ookla publishes mobile tiles separately, and when the power is out, the phone is often the only thing still online. If people moved to cellular at scale, you'd expect more mobile tests and slower mobile speeds around Houston.</p>
+
+<figure class="figure">
+<h3>Mobile speeds from Q2 to Q3: only Houston went backwards in 2024</h3>
+<p class="sub">Change in average mobile download speed from April–June to July–September, by metro</p>
+<div class="legend"><span><i style="background:#6B7177"></i>2023 (no hurricane)</span><span><i style="background:#33A6B8"></i>2024 (Beryl)</span></div>
+<div class="chart st-anim" id="st3-chart" style="--step:.14s"><svg viewBox="0 0 720 280" role="img" aria-labelledby="st3-t"><title id="st3-t">Change in average mobile download speed from Q2 to Q3. Houston area: plus 11 percent in 2023, minus 6 percent in 2024. Dallas-Fort Worth: plus 8 and plus 13. Austin: plus 13 and plus 4. San Antonio: plus 12 and plus 8. El Paso: plus 6 and plus 22.</title>
+<g class="st-ax"><line x1="70" y1="240.0" x2="700" y2="240.0" stroke="#2A2E33"/><text x="62" y="244.0" font-size="11" fill="#8E9499" text-anchor="end">-10%</text><line x1="70" y1="180.0" x2="700" y2="180.0" stroke="#8E9499"/><text x="62" y="184.0" font-size="11" fill="#8E9499" text-anchor="end">+0%</text><line x1="70" y1="120.0" x2="700" y2="120.0" stroke="#2A2E33"/><text x="62" y="124.0" font-size="11" fill="#8E9499" text-anchor="end">+10%</text><line x1="70" y1="60.0" x2="700" y2="60.0" stroke="#2A2E33"/><text x="62" y="64.0" font-size="11" fill="#8E9499" text-anchor="end">+20%</text></g>
+<g class="st-bar" style="--i:0"><rect x="86" y="114.0" width="40" height="66.0" rx="3" fill="#6B7177" style="transform-origin:106.0px 180.0px"><title>Houston area, 2023: mean mobile download 179 to 199 Mbps (+11.0%)</title></rect><text class="st-val" x="106.0" y="107.0" font-size="12" fill="#ECEEEF" text-anchor="middle">+11%</text></g><g class="st-bar" style="--i:1"><rect x="132" y="180.0" width="40" height="35.4" rx="3" fill="#33A6B8" style="transform-origin:152.0px 180.0px"><title>Houston area, 2024: mean mobile download 261 to 246 Mbps (-5.9%)</title></rect><text class="st-val" x="152.0" y="231.4" font-size="12" fill="#ECEEEF" text-anchor="middle">-6%</text></g><text class="st-ax" x="130" y="264" font-size="12" fill="#ECEEEF" text-anchor="middle">Houston area</text><g class="st-bar" style="--i:3"><rect x="204" y="130.2" width="40" height="49.8" rx="3" fill="#6B7177" style="transform-origin:224.0px 180.0px"><title>Dallas-Fort Worth, 2023: mean mobile download 101 to 110 Mbps (+8.3%)</title></rect><text class="st-val" x="224.0" y="123.2" font-size="12" fill="#ECEEEF" text-anchor="middle">+8%</text></g><g class="st-bar" style="--i:4"><rect x="250" y="104.4" width="40" height="75.6" rx="3" fill="#33A6B8" style="transform-origin:270.0px 180.0px"><title>Dallas-Fort Worth, 2024: mean mobile download 313 to 353 Mbps (+12.6%)</title></rect><text class="st-val" x="270.0" y="97.4" font-size="12" fill="#ECEEEF" text-anchor="middle">+13%</text></g><text class="st-ax" x="248" y="264" font-size="12" fill="#8E9499" text-anchor="middle">Dallas–Fort Worth</text><g class="st-bar" style="--i:6"><rect x="322" y="102.6" width="40" height="77.4" rx="3" fill="#6B7177" style="transform-origin:342.0px 180.0px"><title>Austin, 2023: mean mobile download 189 to 213 Mbps (+12.9%)</title></rect><text class="st-val" x="342.0" y="95.6" font-size="12" fill="#ECEEEF" text-anchor="middle">+13%</text></g><g class="st-bar" style="--i:7"><rect x="368" y="153.6" width="40" height="26.4" rx="3" fill="#33A6B8" style="transform-origin:388.0px 180.0px"><title>Austin, 2024: mean mobile download 249 to 260 Mbps (+4.4%)</title></rect><text class="st-val" x="388.0" y="146.6" font-size="12" fill="#ECEEEF" text-anchor="middle">+4%</text></g><text class="st-ax" x="366" y="264" font-size="12" fill="#8E9499" text-anchor="middle">Austin</text><g class="st-bar" style="--i:9"><rect x="440" y="107.4" width="40" height="72.6" rx="3" fill="#6B7177" style="transform-origin:460.0px 180.0px"><title>San Antonio, 2023: mean mobile download 190 to 212 Mbps (+12.1%)</title></rect><text class="st-val" x="460.0" y="100.4" font-size="12" fill="#ECEEEF" text-anchor="middle">+12%</text></g><g class="st-bar" style="--i:10"><rect x="486" y="132.6" width="40" height="47.4" rx="3" fill="#33A6B8" style="transform-origin:506.0px 180.0px"><title>San Antonio, 2024: mean mobile download 269 to 290 Mbps (+7.9%)</title></rect><text class="st-val" x="506.0" y="125.6" font-size="12" fill="#ECEEEF" text-anchor="middle">+8%</text></g><text class="st-ax" x="484" y="264" font-size="12" fill="#8E9499" text-anchor="middle">San Antonio</text><g class="st-bar" style="--i:12"><rect x="558" y="142.8" width="40" height="37.2" rx="3" fill="#6B7177" style="transform-origin:578.0px 180.0px"><title>El Paso, 2023: mean mobile download 149 to 158 Mbps (+6.2%)</title></rect><text class="st-val" x="578.0" y="135.8" font-size="12" fill="#ECEEEF" text-anchor="middle">+6%</text></g><g class="st-bar" style="--i:13"><rect x="604" y="45.0" width="40" height="135.0" rx="3" fill="#33A6B8" style="transform-origin:624.0px 180.0px"><title>El Paso, 2024: mean mobile download 198 to 242 Mbps (+22.5%)</title></rect><text class="st-val" x="624.0" y="38.0" font-size="12" fill="#ECEEEF" text-anchor="middle">+22%</text></g><text class="st-ax" x="602" y="264" font-size="12" fill="#8E9499" text-anchor="middle">El Paso</text>
+</svg></div>
+<button class="pct-replay st3-replay" type="button" hidden>Replay</button>
+<figcaption>Source: Speedtest® by Ookla® Global Fixed and Mobile Network Performance Maps (mobile tiles), CC BY-NC-SA 4.0. Average weighted by tests. Metros by county: Dallas-Fort Worth = Dallas, Tarrant, Collin, Denton; Austin = Travis, Williamson; San Antonio = Bexar; El Paso = El Paso; Houston area as above.</figcaption>
+</figure>
+
+<p>That's exactly what shows up, and it survived the same quarterly blur that hid everything else. Every big Texas metro got faster on mobile from Q2 to Q3 2024. The Houston area went backwards, down 6%, after gaining 11% over the same months in 2023. Harris County on its own fell 7%. Mobile tests in the Houston area also rose 21%, though tests rose in other metros too, so I'd lean on the speeds more than the counts.</p>
+<p>One honest caveat: this data can't tell congestion apart from damage. More people leaning on cellular slows things down, and so do cell sites knocked out by the storm. Both probably happened. Either way, the cellular network around Houston was under strain.</p>
+
 <h2>What I took from it</h2>
-<p>Match the resolution to the question. Ten-minute data showed exactly when Beryl hit and how long recovery took. Quarterly data couldn't tell you a hurricane happened at all.</p>
-<p>Absence is a signal, but only if you're measuring often enough to notice it. And "the network is up" and "people are online" are two very different statements. Routing said everything was fine. The pings said one in ten weren't home.</p>
+<p>Match the resolution to the question. Ten-minute data showed exactly when Beryl hit and how long recovery took. Quarterly fixed broadband data couldn't tell you a hurricane happened at all, but quarterly mobile data could, because the shift to phones was big enough to survive the averaging.</p>
+<p>Absence is a signal, but only if you're measuring often enough to notice it. And "the network is up" and "people are online" are two very different statements. Routing said everything was fine. The pings said one in ten weren't home. And the phones were working overtime.</p>
 
 <div class="callout">
 <span class="eyebrow">Run it yourself</span>
@@ -136,7 +155,7 @@
 <h2>Sources</h2>
 <ul>
 <li><strong>IODA</strong> (Internet Outage Detection and Analysis), Georgia Tech. Active probing and BGP signals for Texas, July 2023 and July 2024, pulled from the <a href="https://api.ioda.inetintel.cc.gatech.edu/v2/">IODA API</a>. Dashboard: <a href="https://ioda.inetintel.cc.gatech.edu">ioda.inetintel.cc.gatech.edu</a></li>
-<li><strong>Speedtest® by Ookla® Global Fixed and Mobile Network Performance Maps</strong>, fixed tiles, 2023 and 2024. Based on analysis by Ookla of Speedtest Intelligence® data. CC BY-NC-SA 4.0. <a href="https://github.com/teamookla/ookla-open-data">github.com/teamookla/ookla-open-data</a> and the <a href="https://registry.opendata.aws/speedtest-global-performance">AWS Registry of Open Data</a></li>
+<li><strong>Speedtest® by Ookla® Global Fixed and Mobile Network Performance Maps</strong>, fixed and mobile tiles, 2023 and 2024. Based on analysis by Ookla of Speedtest Intelligence® data. CC BY-NC-SA 4.0. <a href="https://github.com/teamookla/ookla-open-data">github.com/teamookla/ookla-open-data</a> and the <a href="https://registry.opendata.aws/speedtest-global-performance">AWS Registry of Open Data</a></li>
 <li><strong>County boundaries</strong>: US Census Bureau <a href="https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html">cartographic boundary files</a>, via <a href="https://github.com/plotly/datasets">plotly/datasets</a></li>
 <li><strong>Code</strong>: every script and chart for this story is in <a href="https://github.com/davenmook/data-stories/tree/main/beryl">data-stories/beryl</a></li>
 </ul>
@@ -180,7 +199,7 @@ new IntersectionObserver(function(e,o){if(e[0].isIntersecting){play();o.disconne
 b.addEventListener('click',play);})();
 </script>
 <script>
-['st-chart','st2-chart'].forEach(function(id){var c=document.getElementById(id);if(!c)return;
+['st-chart','st2-chart','st3-chart'].forEach(function(id){var c=document.getElementById(id);if(!c)return;
 if(window.matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
 var b=c.parentNode.querySelector('.pct-replay');c.classList.add('st-wait');
 function play(){c.classList.remove('st-play');void c.getBoundingClientRect();c.classList.add('st-play');}
