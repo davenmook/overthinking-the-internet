@@ -372,3 +372,18 @@ html[data-theme="light"] .follow { background: var(--sage-tint); border-color: #
 /* Notes and stories: one centered reading column, so the extra width splits evenly left and right */
 .reading .article-head, .reading .prose, .reading .follow, .reading .next { max-width: 760px; margin-inline: auto; }
 .reading .follow { margin-bottom: 56px; }
+
+/* Phones: charts swap to a narrow layout drawn for small screens (.m-only); the wide one (.d-only) shows above 600px */
+.chart .m-only { display: none; }
+@media (max-width: 600px) {
+  .chart .d-only { display: none; }
+  .chart .m-only { display: block; min-width: 0; }
+  .nav { gap: 10px; padding-block: 18px; }
+  .nav-links { gap: 2px 18px; }
+  .nav-links > a:not(.btn):not(.nav-social) { display: inline-flex; align-items: center; min-height: 44px; }
+  .nav-links .nav-social, .nav-links .btn, .theme-toggle { min-height: 44px; }
+  .theme-toggle { width: 44px; }
+  .figure { padding: 16px 14px; }
+  .ss-seg button, .ss-btn, .sv-seg button, .sv-btn { min-height: 44px; }
+  .section-head p a { display: inline-flex; align-items: center; min-height: 44px; }
+}

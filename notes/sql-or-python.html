@@ -21,7 +21,7 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/bricolage-grotesque-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <script>try{if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
-<link rel="stylesheet" href="../assets/css/site.css?v=20261015c">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261018a">
 <!-- PostHog: product analytics, web analytics, session replay, experiments -->
 <script async src="https://us-assets.i.posthog.com/static/array.js" onload="window.posthog&&posthog.init('phc_wPRDMiWxnPrd356Rk4mPPCwphxNJaoqS666aZrGCzYdj',{api_host:'https://us.i.posthog.com',person_profiles:'identified_only'})"></script>
 </head>
@@ -105,7 +105,7 @@ out[<span class="tk-s">"median_test"</span>] = tiles[running &gt;= total / <span
 <figure class="figure">
 <h3>Where Texas tiles actually land</h3>
 <p class="sub">Fixed tiles by average download speed, Q4 2025, 50 Mbps bins</p>
-<div class="chart hist-anim" id="hist-chart"><svg viewBox="0 0 720 340" role="img" aria-labelledby="hs-t"><title id="hs-t">Histogram of 136,555 Texas fixed tiles in Q4 2025 by average download speed, in 50 Mbps bins. The 10th percentile is 49 Mbps, the middle tile 309 Mbps and the middle test 401 Mbps.</title>
+<div class="chart hist-anim" id="hist-chart"><svg class="d-only" viewBox="0 0 720 340" role="img" aria-labelledby="hs-t"><title id="hs-t">Histogram of 136,555 Texas fixed tiles in Q4 2025 by average download speed, in 50 Mbps bins. The 10th percentile is 49 Mbps, the middle tile 309 Mbps and the middle test 401 Mbps.</title>
 <line x1="56" x2="700" y1="300.0" y2="300.0" stroke="#2A2E33"/>
 <text x="48" y="304.0" font-size="11" fill="#8E9499" text-anchor="end">0</text>
 <line x1="56" x2="700" y1="270.3" y2="270.3" stroke="#2A2E33"/>
@@ -155,6 +155,49 @@ out[<span class="tk-s">"median_test"</span>] = tiles[running &gt;= total / <span
 <g class="hist-mark hist-med"><line x1="245.7" x2="245.7" y1="46" y2="300" stroke="#A9C4A1" stroke-width="2"/><text x="251.7" y="44" font-size="12" fill="#ECEEEF">Middle tile 309 <tspan fill="#8E9499">Mbps</tspan></text><circle cx="245.7" cy="40" r="4" fill="#A9C4A1"/></g>
 <g class="hist-mark hist-test"><line x1="302.2" x2="302.2" y1="68" y2="300" stroke="#D0912A" stroke-width="2" stroke-dasharray="8 4"/><text x="308.2" y="66" font-size="12" fill="#ECEEEF">Middle test 401 <tspan fill="#8E9499">Mbps</tspan></text><circle cx="302.2" cy="62" r="4" fill="#D0912A"/></g>
 <line x1="56" x2="700" y1="300" y2="300" stroke="#3A3F45"/>
+</svg>
+<svg class="m-only" viewBox="0 0 360 346" role="img" aria-labelledby="hs-t-m"><title id="hs-t-m">Histogram of 136,555 Texas fixed tiles in Q4 2025 by average download speed, in 50 Mbps bins. The 10th percentile is 49 Mbps, the middle tile 309 Mbps and the middle test 401 Mbps.</title>
+<line x1="38" x2="350" y1="300.0" y2="300.0" stroke="#2A2E33"/>
+<text x="33" y="304.0" font-size="12" fill="#8E9499" text-anchor="end">0</text>
+<line x1="38" x2="350" y1="242.9" y2="242.9" stroke="#2A2E33"/>
+<text x="33" y="246.9" font-size="12" fill="#8E9499" text-anchor="end">4k</text>
+<line x1="38" x2="350" y1="185.7" y2="185.7" stroke="#2A2E33"/>
+<text x="33" y="189.7" font-size="12" fill="#8E9499" text-anchor="end">8k</text>
+<line x1="38" x2="350" y1="128.6" y2="128.6" stroke="#2A2E33"/>
+<text x="33" y="132.6" font-size="12" fill="#8E9499" text-anchor="end">12k</text>
+<text x="2" y="90" font-size="12" fill="#8E9499">tiles</text>
+<g class="hist-bar" style="--i:0"><rect x="38.5" y="102.0" width="13.9" height="198.0" rx="2" fill="#33A6B8" fill-opacity="0.75"/><rect x="38.5" y="100" width="13.9" height="200" fill="transparent"/><title>0-50 Mbps: 13,857 tiles</title></g>
+<g class="hist-bar" style="--i:1"><rect x="53.4" y="106.4" width="13.9" height="193.6" rx="2" fill="#4A5056"/><rect x="53.4" y="100" width="13.9" height="200" fill="transparent"/><title>50-100 Mbps: 13,553 tiles</title></g>
+<g class="hist-bar" style="--i:2"><rect x="68.2" y="147.5" width="13.9" height="152.5" rx="2" fill="#4A5056"/><rect x="68.2" y="100" width="13.9" height="200" fill="transparent"/><title>100-150 Mbps: 10,675 tiles</title></g>
+<g class="hist-bar" style="--i:3"><rect x="83.1" y="172.1" width="13.9" height="127.9" rx="2" fill="#4A5056"/><rect x="83.1" y="100" width="13.9" height="200" fill="transparent"/><title>150-200 Mbps: 8,956 tiles</title></g>
+<g class="hist-bar" style="--i:4"><rect x="97.9" y="170.8" width="13.9" height="129.2" rx="2" fill="#4A5056"/><rect x="97.9" y="100" width="13.9" height="200" fill="transparent"/><title>200-250 Mbps: 9,045 tiles</title></g>
+<g class="hist-bar" style="--i:5"><rect x="112.8" y="157.0" width="13.9" height="143.0" rx="2" fill="#4A5056"/><rect x="112.8" y="100" width="13.9" height="200" fill="transparent"/><title>250-300 Mbps: 10,011 tiles</title></g>
+<g class="hist-bar" style="--i:6"><rect x="127.6" y="136.7" width="13.9" height="163.3" rx="2" fill="#4A5056"/><rect x="127.6" y="100" width="13.9" height="200" fill="transparent"/><title>300-350 Mbps: 11,430 tiles</title></g>
+<g class="hist-bar" style="--i:7"><rect x="142.5" y="134.5" width="13.9" height="165.5" rx="2" fill="#4A5056"/><rect x="142.5" y="100" width="13.9" height="200" fill="transparent"/><title>350-400 Mbps: 11,583 tiles</title></g>
+<g class="hist-bar" style="--i:8"><rect x="157.4" y="138.5" width="13.9" height="161.5" rx="2" fill="#4A5056"/><rect x="157.4" y="100" width="13.9" height="200" fill="transparent"/><title>400-450 Mbps: 11,307 tiles</title></g>
+<g class="hist-bar" style="--i:9"><rect x="172.2" y="157.0" width="13.9" height="143.0" rx="2" fill="#4A5056"/><rect x="172.2" y="100" width="13.9" height="200" fill="transparent"/><title>450-500 Mbps: 10,013 tiles</title></g>
+<g class="hist-bar" style="--i:10"><rect x="187.1" y="191.2" width="13.9" height="108.8" rx="2" fill="#4A5056"/><rect x="187.1" y="100" width="13.9" height="200" fill="transparent"/><title>500-550 Mbps: 7,616 tiles</title></g>
+<g class="hist-bar" style="--i:11"><rect x="201.9" y="221.6" width="13.9" height="78.4" rx="2" fill="#4A5056"/><rect x="201.9" y="100" width="13.9" height="200" fill="transparent"/><title>550-600 Mbps: 5,491 tiles</title></g>
+<g class="hist-bar" style="--i:12"><rect x="216.8" y="245.2" width="13.9" height="54.8" rx="2" fill="#4A5056"/><rect x="216.8" y="100" width="13.9" height="200" fill="transparent"/><title>600-650 Mbps: 3,836 tiles</title></g>
+<g class="hist-bar" style="--i:13"><rect x="231.6" y="262.1" width="13.9" height="37.9" rx="2" fill="#4A5056"/><rect x="231.6" y="100" width="13.9" height="200" fill="transparent"/><title>650-700 Mbps: 2,653 tiles</title></g>
+<g class="hist-bar" style="--i:14"><rect x="246.5" y="274.7" width="13.9" height="25.3" rx="2" fill="#4A5056"/><rect x="246.5" y="100" width="13.9" height="200" fill="transparent"/><title>700-750 Mbps: 1,770 tiles</title></g>
+<g class="hist-bar" style="--i:15"><rect x="261.4" y="281.3" width="13.9" height="18.7" rx="2" fill="#4A5056"/><rect x="261.4" y="100" width="13.9" height="200" fill="transparent"/><title>750-800 Mbps: 1,310 tiles</title></g>
+<g class="hist-bar" style="--i:16"><rect x="276.2" y="287.6" width="13.9" height="12.4" rx="2" fill="#4A5056"/><rect x="276.2" y="100" width="13.9" height="200" fill="transparent"/><title>800-850 Mbps: 867 tiles</title></g>
+<g class="hist-bar" style="--i:17"><rect x="291.1" y="290.6" width="13.9" height="9.4" rx="2" fill="#4A5056"/><rect x="291.1" y="100" width="13.9" height="200" fill="transparent"/><title>850-900 Mbps: 657 tiles</title></g>
+<g class="hist-bar" style="--i:18"><rect x="305.9" y="290.7" width="13.9" height="9.3" rx="2" fill="#4A5056"/><rect x="305.9" y="100" width="13.9" height="200" fill="transparent"/><title>900-950 Mbps: 654 tiles</title></g>
+<g class="hist-bar" style="--i:19"><rect x="320.8" y="295.2" width="13.9" height="4.8" rx="2" fill="#4A5056"/><rect x="320.8" y="100" width="13.9" height="200" fill="transparent"/><title>950-1000 Mbps: 333 tiles</title></g>
+<g class="hist-bar" style="--i:20"><rect x="335.6" y="286.6" width="13.9" height="13.4" rx="2" fill="#4A5056"/><rect x="335.6" y="100" width="13.9" height="200" fill="transparent"/><title>1,000+ Mbps: 938 tiles</title></g>
+<text x="38.0" y="318" font-size="12" fill="#8E9499" text-anchor="middle">0</text>
+<text x="97.4" y="318" font-size="12" fill="#8E9499" text-anchor="middle">200</text>
+<text x="156.9" y="318" font-size="12" fill="#8E9499" text-anchor="middle">400</text>
+<text x="216.3" y="318" font-size="12" fill="#8E9499" text-anchor="middle">600</text>
+<text x="275.7" y="318" font-size="12" fill="#8E9499" text-anchor="middle">800</text>
+<text x="335.1" y="318" font-size="12" fill="#8E9499" text-anchor="middle">1,000+</text>
+<text x="350" y="338" font-size="12" fill="#8E9499" text-anchor="end">average download per tile, Mbps</text>
+<g class="hist-mark hist-p10"><line x1="52.7" x2="52.7" y1="24" y2="300" stroke="#33A6B8" stroke-width="2" stroke-dasharray="4 4"/><text x="60.7" y="23" font-size="13" fill="#ECEEEF" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">10th percentile 49 <tspan fill="#8E9499">Mbps</tspan></text><circle cx="52.7" cy="18" r="4" fill="#33A6B8"/></g>
+<g class="hist-mark hist-med"><line x1="129.9" x2="129.9" y1="50" y2="300" stroke="#A9C4A1" stroke-width="2"/><text x="137.9" y="49" font-size="13" fill="#ECEEEF" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Middle tile 309 <tspan fill="#8E9499">Mbps</tspan></text><circle cx="129.9" cy="44" r="4" fill="#A9C4A1"/></g>
+<g class="hist-mark hist-test"><line x1="157.3" x2="157.3" y1="76" y2="300" stroke="#D0912A" stroke-width="2" stroke-dasharray="8 4"/><text x="165.3" y="75" font-size="13" fill="#ECEEEF" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Middle test 401 <tspan fill="#8E9499">Mbps</tspan></text><circle cx="157.3" cy="70" r="4" fill="#D0912A"/></g>
+<line x1="38" x2="350" y1="300" y2="300" stroke="#3A3F45"/>
 </svg></div>
 <figcaption>One tile in ten averages under 50 Mbps (the teal bar). The middle tile sits at 309 Mbps, and the middle test, which leans toward busy tiles, sits at 401. It replays every few seconds; hover a bar for its count. Source: Speedtest&reg; by Ookla&reg; open data (fixed tiles) via Ookla for Good.</figcaption>
 </figure>
@@ -162,7 +205,7 @@ out[<span class="tk-s">"median_test"</span>] = tiles[running &gt;= total / <span
 <figure class="figure">
 <h3>The middle tile and the middle test can tell very different stories</h3>
 <p class="sub">Median fixed download speed in Mbps, Q4 2025</p>
-<div class="chart"><svg viewBox="0 0 720 356" role="img" aria-labelledby="sp-t"><title id="sp-t">Q4 2025 median download speed, middle tile versus middle test, for Texas and six counties. Values are listed in the table below the chart.</title>
+<div class="chart"><svg class="d-only" viewBox="0 0 720 356" role="img" aria-labelledby="sp-t"><title id="sp-t">Q4 2025 median download speed, middle tile versus middle test, for Texas and six counties. Values are listed in the table below the chart.</title>
 <line x1="150.0" x2="150.0" y1="32" y2="326" stroke="#2A2E33" stroke-width="1"/>
 <text x="150.0" y="344" font-size="12" fill="#8E9499" text-anchor="middle">0</text>
 <line x1="238.3" x2="238.3" y1="32" y2="326" stroke="#2A2E33" stroke-width="1"/>
@@ -213,6 +256,52 @@ out[<span class="tk-s">"median_test"</span>] = tiles[running &gt;= total / <span
 <g class="dot"><rect x="193.0" y="288" width="24" height="24" fill="transparent"/><rect x="199.0" y="294" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 205.0 300)"/><title>Reeves: middle test 62 Mbps</title></g>
 <text x="193.0" y="304" font-size="12" fill="#8E9499" text-anchor="end">62</text>
 <text x="297.0" y="304" font-size="12" fill="#8E9499">153</text>
+</svg>
+<svg class="m-only" viewBox="0 0 360 384" role="img" aria-labelledby="sp-t-m"><title id="sp-t-m">Q4 2025 median download speed, middle tile versus middle test, for Texas and six counties. Values are listed in the table below the chart.</title>
+<line x1="16.0" x2="16.0" y1="34" y2="356" stroke="#2A2E33" stroke-width="1"/>
+<text x="16.0" y="374" font-size="12" fill="#8E9499" text-anchor="start">0</text>
+<line x1="125.3" x2="125.3" y1="34" y2="356" stroke="#2A2E33" stroke-width="1"/>
+<text x="125.3" y="374" font-size="12" fill="#8E9499" text-anchor="middle">200</text>
+<line x1="234.7" x2="234.7" y1="34" y2="356" stroke="#2A2E33" stroke-width="1"/>
+<text x="234.7" y="374" font-size="12" fill="#8E9499" text-anchor="middle">400</text>
+<line x1="344.0" x2="344.0" y1="34" y2="356" stroke="#2A2E33" stroke-width="1"/>
+<text x="344.0" y="374" font-size="12" fill="#8E9499" text-anchor="end">600</text>
+<circle cx="22" cy="14" r="6" fill="#A9C4A1"/><text x="34" y="18.5" font-size="13" fill="#C9CDD0">Middle tile</text>
+<rect x="150" y="8" width="12" height="12" rx="2" fill="#D0912A" transform="rotate(45 156 14)"/><text x="170" y="18.5" font-size="13" fill="#C9CDD0">Middle test</text>
+<text x="16" y="52" font-size="13" fill="#ECEEEF" font-weight="600" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Texas (all tiles)</text>
+<line x1="184.9" x2="235.2" y1="69" y2="69" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="184.9" cy="69" r="12" fill="transparent"/><circle cx="184.9" cy="69" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Texas (all tiles): middle tile 309 Mbps</title></g>
+<g class="dot"><rect x="223.2" y="57" width="24" height="24" fill="transparent"/><rect x="229.2" y="63" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 235.2 69)"/><title>Texas (all tiles): middle test 401 Mbps</title></g>
+<text x="172.9" y="73" font-size="12" fill="#8E9499" text-anchor="end" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">309</text>
+<text x="247.2" y="73" font-size="12" fill="#8E9499" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">401</text>
+<text x="16" y="98" font-size="13" fill="#ECEEEF" font-weight="400" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Harris</text>
+<line x1="228.1" x2="240.1" y1="115" y2="115" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="228.1" cy="115" r="12" fill="transparent"/><circle cx="228.1" cy="115" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Harris: middle tile 388 Mbps</title></g>
+<g class="dot"><rect x="228.1" y="103" width="24" height="24" fill="transparent"/><rect x="234.1" y="109" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 240.1 115)"/><title>Harris: middle test 410 Mbps</title></g>
+<text x="16" y="144" font-size="13" fill="#ECEEEF" font-weight="400" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Dallas</text>
+<line x1="236.9" x2="241.8" y1="161" y2="161" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="236.9" cy="161" r="12" fill="transparent"/><circle cx="236.9" cy="161" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Dallas: middle tile 404 Mbps</title></g>
+<g class="dot"><rect x="229.8" y="149" width="24" height="24" fill="transparent"/><rect x="235.8" y="155" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 241.8 161)"/><title>Dallas: middle test 413 Mbps</title></g>
+<text x="16" y="190" font-size="13" fill="#ECEEEF" font-weight="400" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Bexar</text>
+<line x1="233.0" x2="248.9" y1="207" y2="207" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="233.0" cy="207" r="12" fill="transparent"/><circle cx="233.0" cy="207" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Bexar: middle tile 397 Mbps</title></g>
+<g class="dot"><rect x="236.9" y="195" width="24" height="24" fill="transparent"/><rect x="242.9" y="201" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 248.9 207)"/><title>Bexar: middle test 426 Mbps</title></g>
+<text x="16" y="236" font-size="13" fill="#ECEEEF" font-weight="400" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Travis</text>
+<line x1="222.1" x2="240.1" y1="253" y2="253" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="222.1" cy="253" r="12" fill="transparent"/><circle cx="222.1" cy="253" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Travis: middle tile 377 Mbps</title></g>
+<g class="dot"><rect x="228.1" y="241" width="24" height="24" fill="transparent"/><rect x="234.1" y="247" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 240.1 253)"/><title>Travis: middle test 410 Mbps</title></g>
+<text x="16" y="282" font-size="13" fill="#ECEEEF" font-weight="400" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Falls</text>
+<line x1="66.8" x2="293.7" y1="299" y2="299" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="66.8" cy="299" r="12" fill="transparent"/><circle cx="66.8" cy="299" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Falls: middle tile 93 Mbps</title></g>
+<g class="dot"><rect x="281.7" y="287" width="24" height="24" fill="transparent"/><rect x="287.7" y="293" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 293.7 299)"/><title>Falls: middle test 508 Mbps</title></g>
+<text x="54.8" y="303" font-size="12" fill="#8E9499" text-anchor="end" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">93</text>
+<text x="305.7" y="303" font-size="12" fill="#8E9499" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">508</text>
+<text x="16" y="328" font-size="13" fill="#ECEEEF" font-weight="400" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Reeves</text>
+<line x1="49.9" x2="99.6" y1="345" y2="345" stroke="#6B7177" stroke-width="2" stroke-linecap="round"/>
+<g class="dot"><circle cx="99.6" cy="345" r="12" fill="transparent"/><circle cx="99.6" cy="345" r="6" fill="#A9C4A1" stroke="#1B1E21" stroke-width="2"/><title>Reeves: middle tile 153 Mbps</title></g>
+<g class="dot"><rect x="37.9" y="333" width="24" height="24" fill="transparent"/><rect x="43.9" y="339" width="12" height="12" rx="2" fill="#D0912A" stroke="#1B1E21" stroke-width="2" transform="rotate(45 49.9 345)"/><title>Reeves: middle test 62 Mbps</title></g>
+<text x="37.9" y="349" font-size="12" fill="#8E9499" text-anchor="end" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">62</text>
+<text x="111.6" y="349" font-size="12" fill="#8E9499" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">153</text>
 </svg></div>
 <table class="data">
 <thead><tr><th>Q4 2025</th><th>Middle tile</th><th>Middle test</th></tr></thead>

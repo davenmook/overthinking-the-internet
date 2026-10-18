@@ -21,9 +21,21 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/bricolage-grotesque-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <script>try{if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
-<link rel="stylesheet" href="../assets/css/site.css?v=20261015c">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261018a">
 <!-- PostHog: product analytics, web analytics, session replay, experiments -->
 <script async src="https://us-assets.i.posthog.com/static/array.js" onload="window.posthog&&posthog.init('phc_wPRDMiWxnPrd356Rk4mPPCwphxNJaoqS666aZrGCzYdj',{api_host:'https://us.i.posthog.com',person_profiles:'identified_only'})"></script>
+<style>
+/* Phones: the six-column city table stacks into one card per city */
+@media (max-width: 600px) {
+  #churn-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  #churn-table, #churn-table tbody, #churn-table tr, #churn-table td { display: block; width: 100%; }
+  #churn-table tr { padding: 4px 0 10px; border-bottom: 1px solid var(--line); }
+  #churn-table td { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 3px 2px; border-bottom: 0; text-align: right; }
+  #churn-table td:first-child { color: var(--fg); font-weight: 600; padding-top: 10px; }
+  #churn-table td:first-child::after { content: "fiber / non-fiber"; color: var(--muted); font-family: var(--mono); font-weight: 400; font-size: 12px; }
+  #churn-table td[data-label]::before { content: attr(data-label); color: var(--muted); font-family: var(--mono); font-size: 12px; text-align: left; }
+}
+</style>
 </head>
 <body>
 <header id="top"><nav class="wrap nav" aria-label="Main">
@@ -87,7 +99,7 @@
 <h3>Fiber providers have higher NPS in every city</h3>
 <p class="sub">Net Promoter Score, fiber vs. non-fiber providers, Q4 2024</p>
 <div class="legend"><span><i style="background:#A9C4A1"></i>Fiber</span><span><i style="background:#6B7177"></i>Non-fiber</span></div>
-<div class="chart"><svg viewBox="0 0 720 346" role="img" aria-labelledby="nps-t"><title id="nps-t">Net Promoter Score for fiber and non-fiber providers in five cities. Fiber leads in every city.</title>
+<div class="chart"><svg class="d-only" viewBox="0 0 720 346" role="img" aria-labelledby="nps-t"><title id="nps-t">Net Promoter Score for fiber and non-fiber providers in five cities. Fiber leads in every city.</title>
 <line x1="173.8" y1="18" x2="173.8" y2="322" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
 <text x="173.8" y="340" font-size="12" fill="#8E9499" text-anchor="middle">−80</text>
 <line x1="349.2" y1="18" x2="349.2" y2="322" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
@@ -121,6 +133,41 @@
 <text x="669.3" y="276.5" font-size="12" fill="#ECEEEF" text-anchor="start">+31.6</text>
 <rect class="bar" x="173.8" y="284" width="350.8" height="16" rx="4" fill="#6B7177"><title>Seattle, Non-fiber: NPS −80.00</title></rect>
 <text x="167.8" y="296.5" font-size="12" fill="#ECEEEF" text-anchor="end">−80.0</text>
+</svg>
+<svg class="m-only" viewBox="0 0 360 356" role="img" aria-labelledby="nps-t-m"><title id="nps-t-m">Net Promoter Score for fiber and non-fiber providers in five cities. Fiber leads in every city.</title>
+<line x1="46.0" y1="4" x2="46.0" y2="334" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="46.0" y="352" font-size="12" fill="#8E9499" text-anchor="middle">−80</text>
+<line x1="136.0" y1="4" x2="136.0" y2="334" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="136.0" y="352" font-size="12" fill="#8E9499" text-anchor="middle">−40</text>
+<line x1="226.0" y1="4" x2="226.0" y2="334" stroke="#3A3F45" stroke-width="1.5" />
+<text x="226.0" y="352" font-size="12" fill="#8E9499" text-anchor="middle">0</text>
+<line x1="316.0" y1="4" x2="316.0" y2="334" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="316.0" y="352" font-size="12" fill="#8E9499" text-anchor="middle">+40</text>
+<text x="0" y="21" font-size="13" fill="#ECEEEF" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Atlanta</text>
+<rect class="bar" x="226.0" y="28" width="17.8" height="14" rx="3" fill="#A9C4A1"><title>Atlanta, Fiber: NPS 7.93</title></rect>
+<text x="249.8" y="39.5" font-size="12" fill="#ECEEEF" text-anchor="start">+7.9</text>
+<rect class="bar" x="119.7" y="46" width="106.3" height="14" rx="3" fill="#6B7177"><title>Atlanta, Non-fiber: NPS −47.26</title></rect>
+<text x="113.7" y="57.5" font-size="12" fill="#ECEEEF" text-anchor="end">−47.3</text>
+<text x="0" y="87" font-size="13" fill="#ECEEEF" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Houston</text>
+<rect class="bar" x="226.0" y="94" width="62.5" height="14" rx="3" fill="#A9C4A1"><title>Houston, Fiber: NPS 27.78</title></rect>
+<text x="294.5" y="105.5" font-size="12" fill="#ECEEEF" text-anchor="start">+27.8</text>
+<rect class="bar" x="98.7" y="112" width="127.3" height="14" rx="3" fill="#6B7177"><title>Houston, Non-fiber: NPS −56.56</title></rect>
+<text x="92.7" y="123.5" font-size="12" fill="#ECEEEF" text-anchor="end">−56.6</text>
+<text x="0" y="153" font-size="13" fill="#ECEEEF" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Los Angeles</text>
+<rect class="bar" x="226.0" y="160" width="3.0" height="14" rx="3" fill="#A9C4A1"><title>Los Angeles, Fiber: NPS 0.92</title></rect>
+<text x="235.0" y="171.5" font-size="12" fill="#ECEEEF" text-anchor="start">+0.9</text>
+<rect class="bar" x="76.2" y="178" width="149.8" height="14" rx="3" fill="#6B7177"><title>Los Angeles, Non-fiber: NPS −66.56</title></rect>
+<text x="70.2" y="189.5" font-size="12" fill="#ECEEEF" text-anchor="end">−66.6</text>
+<text x="0" y="219" font-size="13" fill="#ECEEEF" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Philadelphia</text>
+<rect class="bar" x="216.6" y="226" width="9.4" height="14" rx="3" fill="#A9C4A1"><title>Philadelphia, Fiber: NPS −4.16</title></rect>
+<text x="210.6" y="237.5" font-size="12" fill="#ECEEEF" text-anchor="end">−4.2</text>
+<rect class="bar" x="136.0" y="244" width="90.0" height="14" rx="3" fill="#6B7177"><title>Philadelphia, Non-fiber: NPS −40.00</title></rect>
+<text x="130.0" y="255.5" font-size="12" fill="#ECEEEF" text-anchor="end">−40.0</text>
+<text x="0" y="285" font-size="13" fill="#ECEEEF" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Seattle</text>
+<rect class="bar" x="226.0" y="292" width="71.2" height="14" rx="3" fill="#A9C4A1"><title>Seattle, Fiber: NPS 31.63</title></rect>
+<text x="303.2" y="303.5" font-size="12" fill="#ECEEEF" text-anchor="start">+31.6</text>
+<rect class="bar" x="46.0" y="310" width="180.0" height="14" rx="3" fill="#6B7177"><title>Seattle, Non-fiber: NPS −80.00</title></rect>
+<text x="40.0" y="321.5" font-size="12" fill="#ECEEEF" text-anchor="end">−80.0</text>
 </svg></div>
 <figcaption>Data: Ookla Speedtest Intelligence, Q4 2024, as presented in the public webinar "Why Customers Leave: Preventing Churn" (2025).</figcaption>
 </figure>
@@ -129,7 +176,7 @@
 <h3>And their connections respond 3 to 15 times faster</h3>
 <p class="sub">Latency in milliseconds, lower is better, Q4 2024</p>
 <div class="legend"><span><i style="background:#A9C4A1"></i>Fiber</span><span><i style="background:#6B7177"></i>Non-fiber</span></div>
-<div class="chart"><svg viewBox="0 0 720 346" role="img" aria-labelledby="lat-t"><title id="lat-t">Latency in milliseconds for fiber and non-fiber providers in five cities. Fiber is 4 to 7 ms; non-fiber is 24 to 60 ms.</title>
+<div class="chart"><svg class="d-only" viewBox="0 0 720 346" role="img" aria-labelledby="lat-t"><title id="lat-t">Latency in milliseconds for fiber and non-fiber providers in five cities. Fiber is 4 to 7 ms; non-fiber is 24 to 60 ms.</title>
 <line x1="130.0" y1="18" x2="130.0" y2="322" stroke="#3A3F45" stroke-width="1.5" />
 <text x="130.0" y="340" font-size="12" fill="#8E9499" text-anchor="middle">0 ms</text>
 <line x1="299.2" y1="18" x2="299.2" y2="322" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
@@ -163,9 +210,44 @@
 <text x="169.8" y="276.5" font-size="12" fill="#ECEEEF">4 ms</text>
 <rect class="bar" x="130" y="284" width="507.7" height="16" rx="4" fill="#6B7177"><title>Seattle, Non-fiber: 60 ms latency</title></rect>
 <text x="643.7" y="296.5" font-size="12" fill="#ECEEEF">60 ms</text>
+</svg>
+<svg class="m-only" viewBox="0 0 360 356" role="img" aria-labelledby="lat-t-m"><title id="lat-t-m">Latency in milliseconds for fiber and non-fiber providers in five cities. Fiber is 4 to 7 ms; non-fiber is 24 to 60 ms.</title>
+<line x1="8.0" y1="4" x2="8.0" y2="334" stroke="#3A3F45" stroke-width="1.5" />
+<text x="6.5" y="352" font-size="12" fill="#8E9499" text-anchor="start">0 ms</text>
+<line x1="108.0" y1="4" x2="108.0" y2="334" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="108.0" y="352" font-size="12" fill="#8E9499" text-anchor="middle">20 ms</text>
+<line x1="208.0" y1="4" x2="208.0" y2="334" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="208.0" y="352" font-size="12" fill="#8E9499" text-anchor="middle">40 ms</text>
+<line x1="308.0" y1="4" x2="308.0" y2="334" stroke="#3A3F45" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="308.0" y="352" font-size="12" fill="#8E9499" text-anchor="middle">60 ms</text>
+<text x="14" y="21" font-size="13" fill="#ECEEEF" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Atlanta</text>
+<rect class="bar" x="8" y="28" width="25.0" height="14" rx="3" fill="#A9C4A1"><title>Atlanta, Fiber: 5 ms latency</title></rect>
+<text x="39.0" y="39.5" font-size="12" fill="#ECEEEF">5 ms</text>
+<rect class="bar" x="8" y="46" width="125.0" height="14" rx="3" fill="#6B7177"><title>Atlanta, Non-fiber: 25 ms latency</title></rect>
+<text x="139.0" y="57.5" font-size="12" fill="#ECEEEF">25 ms</text>
+<text x="14" y="87" font-size="13" fill="#ECEEEF" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Houston</text>
+<rect class="bar" x="8" y="94" width="20.0" height="14" rx="3" fill="#A9C4A1"><title>Houston, Fiber: 4 ms latency</title></rect>
+<text x="34.0" y="105.5" font-size="12" fill="#ECEEEF">4 ms</text>
+<rect class="bar" x="8" y="112" width="125.0" height="14" rx="3" fill="#6B7177"><title>Houston, Non-fiber: 25 ms latency</title></rect>
+<text x="139.0" y="123.5" font-size="12" fill="#ECEEEF">25 ms</text>
+<text x="14" y="153" font-size="13" fill="#ECEEEF" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Los Angeles</text>
+<rect class="bar" x="8" y="160" width="35.0" height="14" rx="3" fill="#A9C4A1"><title>Los Angeles, Fiber: 7 ms latency</title></rect>
+<text x="49.0" y="171.5" font-size="12" fill="#ECEEEF">7 ms</text>
+<rect class="bar" x="8" y="178" width="120.0" height="14" rx="3" fill="#6B7177"><title>Los Angeles, Non-fiber: 24 ms latency</title></rect>
+<text x="134.0" y="189.5" font-size="12" fill="#ECEEEF">24 ms</text>
+<text x="14" y="219" font-size="13" fill="#ECEEEF" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Philadelphia</text>
+<rect class="bar" x="8" y="226" width="35.0" height="14" rx="3" fill="#A9C4A1"><title>Philadelphia, Fiber: 7 ms latency</title></rect>
+<text x="49.0" y="237.5" font-size="12" fill="#ECEEEF">7 ms</text>
+<rect class="bar" x="8" y="244" width="245.0" height="14" rx="3" fill="#6B7177"><title>Philadelphia, Non-fiber: 49 ms latency</title></rect>
+<text x="259.0" y="255.5" font-size="12" fill="#ECEEEF">49 ms</text>
+<text x="14" y="285" font-size="13" fill="#ECEEEF" stroke="#1B1E21" stroke-width="4" stroke-linejoin="round" paint-order="stroke">Seattle</text>
+<rect class="bar" x="8" y="292" width="20.0" height="14" rx="3" fill="#A9C4A1"><title>Seattle, Fiber: 4 ms latency</title></rect>
+<text x="34.0" y="303.5" font-size="12" fill="#ECEEEF">4 ms</text>
+<rect class="bar" x="8" y="310" width="300.0" height="14" rx="3" fill="#6B7177"><title>Seattle, Non-fiber: 60 ms latency</title></rect>
+<text x="314.0" y="321.5" font-size="12" fill="#ECEEEF">60 ms</text>
 </svg></div>
 <figcaption>Data: Ookla Speedtest Intelligence, Q4 2024, as presented in the public webinar "Why Customers Leave: Preventing Churn" (2025).</figcaption>
-<details class="table-view"><summary>See all the numbers</summary><div class="scroll"><table class="data"><thead><tr><th>City (fiber / non-fiber)</th><th>Download Mbps</th><th>Upload Mbps</th><th>Latency ms</th><th>Rating 1–5</th><th>NPS</th></tr></thead><tbody><tr><td>Atlanta</td><td>346.7 / 47.5</td><td>270.4 / 10.5</td><td>5 / 25</td><td>3.70 / 2.50</td><td>7.93 / −47.26</td></tr><tr><td>Houston</td><td>477.0 / 44.8</td><td>392.0 / 11.8</td><td>4 / 25</td><td>3.80 / 2.40</td><td>27.78 / −56.56</td></tr><tr><td>Los Angeles</td><td>317.7 / 42.9</td><td>261.0 / 11.0</td><td>7 / 24</td><td>3.60 / 2.40</td><td>0.92 / −66.56</td></tr><tr><td>Philadelphia</td><td>288.4 / 83.9</td><td>176.0 / 25.9</td><td>7 / 49</td><td>3.50 / 4.00</td><td>−4.16 / −40.00</td></tr><tr><td>Seattle</td><td>302.7 / 81.3</td><td>260.6 / 17.8</td><td>4 / 60</td><td>4.10 / 2.10</td><td>31.63 / −80.00</td></tr></tbody></table></div></details>
+<details class="table-view"><summary>See all the numbers</summary><div class="scroll"><table class="data" id="churn-table"><thead><tr><th>City (fiber / non-fiber)</th><th>Download Mbps</th><th>Upload Mbps</th><th>Latency ms</th><th>Rating 1–5</th><th>NPS</th></tr></thead><tbody><tr><td>Atlanta</td><td data-label="Download Mbps">346.7 / 47.5</td><td data-label="Upload Mbps">270.4 / 10.5</td><td data-label="Latency ms">5 / 25</td><td data-label="Rating 1–5">3.70 / 2.50</td><td data-label="NPS">7.93 / −47.26</td></tr><tr><td>Houston</td><td data-label="Download Mbps">477.0 / 44.8</td><td data-label="Upload Mbps">392.0 / 11.8</td><td data-label="Latency ms">4 / 25</td><td data-label="Rating 1–5">3.80 / 2.40</td><td data-label="NPS">27.78 / −56.56</td></tr><tr><td>Los Angeles</td><td data-label="Download Mbps">317.7 / 42.9</td><td data-label="Upload Mbps">261.0 / 11.0</td><td data-label="Latency ms">7 / 24</td><td data-label="Rating 1–5">3.60 / 2.40</td><td data-label="NPS">0.92 / −66.56</td></tr><tr><td>Philadelphia</td><td data-label="Download Mbps">288.4 / 83.9</td><td data-label="Upload Mbps">176.0 / 25.9</td><td data-label="Latency ms">7 / 49</td><td data-label="Rating 1–5">3.50 / 4.00</td><td data-label="NPS">−4.16 / −40.00</td></tr><tr><td>Seattle</td><td data-label="Download Mbps">302.7 / 81.3</td><td data-label="Upload Mbps">260.6 / 17.8</td><td data-label="Latency ms">4 / 60</td><td data-label="Rating 1–5">4.10 / 2.10</td><td data-label="NPS">31.63 / −80.00</td></tr></tbody></table></div></details>
 </figure>
 
 <p>Then the movement data closed the loop. Tracking which providers were gaining and losing users quarter by quarter, the operators investing fastest in fiber were the ones gaining and keeping customers in Houston, Los Angeles, Philadelphia, and Seattle.</p>

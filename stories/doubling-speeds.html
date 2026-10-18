@@ -21,7 +21,7 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/bricolage-grotesque-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <script>try{if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
-<link rel="stylesheet" href="../assets/css/site.css?v=20261015c">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261018a">
 <!-- PostHog: product analytics, web analytics, session replay, experiments -->
 <script async src="https://us-assets.i.posthog.com/static/array.js" onload="window.posthog&&posthog.init('phc_wPRDMiWxnPrd356Rk4mPPCwphxNJaoqS666aZrGCzYdj',{api_host:'https://us.i.posthog.com',person_profiles:'identified_only'})"></script>
 </head>
@@ -54,7 +54,7 @@
 <h3>Same sites, same spectrum, twice the downlink</h3>
 <p class="sub">Relative downlink performance on the affected radio designs</p>
 <div class="legend"><span><i style="background:#6B7177"></i>Before the fix</span><span><i style="background:#A9C4A1"></i>After the fix</span></div>
-<div class="chart"><svg viewBox="0 0 640 220" role="img" aria-labelledby="dl-t" style="min-width:0"><title id="dl-t">Downlink performance doubled after a cable configuration fix: before 1x, after 2x.</title>
+<div class="chart"><svg class="d-only" viewBox="0 0 640 220" role="img" aria-labelledby="dl-t" style="min-width:0"><title id="dl-t">Downlink performance doubled after a cable configuration fix: before 1x, after 2x.</title>
 <line x1="40" y1="190" x2="620" y2="190" stroke="#3A3F45" stroke-width="1.5"/>
 <rect class="bar" x="150" y="110" width="110" height="80" rx="4" fill="#6B7177"><title>Before: 1x downlink</title></rect>
 <rect class="bar" x="380" y="30" width="110" height="160" rx="4" fill="#A9C4A1"><title>After: 2x downlink</title></rect>
@@ -62,6 +62,15 @@
 <text x="435" y="20" font-size="15" fill="#ECEEEF" text-anchor="middle">2×</text>
 <text x="205" y="212" font-size="13" fill="#8E9499" text-anchor="middle">before</text>
 <text x="435" y="212" font-size="13" fill="#8E9499" text-anchor="middle">after</text>
+</svg>
+<svg class="m-only" viewBox="0 0 360 230" role="img" aria-labelledby="dl-t-m"><title id="dl-t-m">Downlink performance doubled after a cable configuration fix: before 1x, after 2x.</title>
+<line x1="16" y1="196" x2="344" y2="196" stroke="#3A3F45" stroke-width="1.5"/>
+<rect class="bar" x="70" y="116" width="80" height="80" rx="4" fill="#6B7177"><title>Before: 1x downlink</title></rect>
+<rect class="bar" x="210" y="36" width="80" height="160" rx="4" fill="#A9C4A1"><title>After: 2x downlink</title></rect>
+<text x="110" y="106" font-size="15" fill="#ECEEEF" text-anchor="middle">1×</text>
+<text x="250" y="26" font-size="15" fill="#ECEEEF" text-anchor="middle">2×</text>
+<text x="110" y="218" font-size="13" fill="#8E9499" text-anchor="middle">before</text>
+<text x="250" y="218" font-size="13" fill="#8E9499" text-anchor="middle">after</text>
 </svg></div>
 <figcaption>Illustrative of the relative change. Exact figures are internal and not shown.</figcaption>
 </figure>
