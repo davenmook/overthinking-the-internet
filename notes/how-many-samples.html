@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How many samples are enough? · Dave Noel</title>
+<meta name="description" content="The median settles after about 100 samples. The 10th percentile needs closer to 3,000. Here's the math, and a pizza analogy.">
+<link rel="canonical" href="https://davenoel.me/notes/how-many-samples.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Overthinking the Internet">
+<meta property="og:title" content="How many samples are enough? · Dave Noel">
+<meta property="og:description" content="The median settles after about 100 samples. The 10th percentile needs closer to 3,000. Here's the math, and a pizza analogy.">
+<meta property="og:url" content="https://davenoel.me/notes/how-many-samples.html">
+<meta property="og:image" content="https://davenoel.me/assets/img/og/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#131517">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preload" href="../assets/fonts/bricolage-grotesque-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script>try{if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
+<link rel="stylesheet" href="../assets/css/site.css?v=20261015c">
+<!-- PostHog: product analytics, web analytics, session replay, experiments -->
+<script async src="https://us-assets.i.posthog.com/static/array.js" onload="window.posthog&&posthog.init('phc_wPRDMiWxnPrd356Rk4mPPCwphxNJaoqS666aZrGCzYdj',{api_host:'https://us.i.posthog.com',person_profiles:'identified_only'})"></script>
+</head>
+<body>
+<header id="top"><nav class="wrap nav" aria-label="Main">
+<a class="brand" href="../"><img src="../assets/img/avatar-ring.png" alt="" width="40" height="40"><span>Overthinking the Internet</span></a>
+<div class="nav-links">
+<a href="../index.html#stories">Data stories</a>
+<a href="../index.html#notes" aria-current="page">Notes</a>
+<a href="../talks.html">Talks</a>
+<a href="../about.html">About</a>
+<a class="nav-social" href="https://www.linkedin.com/in/noeldave" target="_blank" rel="me noopener" aria-label="Dave Noel on LinkedIn (opens in a new tab)">LinkedIn<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h7v7M13 3L4 12"/></svg></a>
+<button class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+<a class="btn btn-primary" href="#contact">Say hi</a>
+</div>
+</nav></header>
+<main class="wrap reading">
+<div class="article-head">
+<div class="eyebrow">Notes · Data quality</div>
+<h1>How many samples are <em>enough?</em></h1>
+<p class="dek">The median settles after about 100. The 10th percentile needs closer to 3,000. Here's why.</p>
+<div class="byline"><img src="../assets/img/avatar-ring.png" alt="" width="36" height="36"><span>Dave Noel · 9 min read</span></div>
+</div>
+
+<article class="prose">
+<p>Short answer: it depends on which number you care about! The median calms down after about 100 samples. The 10th percentile, the number that tells you who's having a rough time, needs 2,000 to 3,000 before it behaves as well. That's 20 to 30 times the samples for two numbers computed from the exact same data, and the reason why is one of my favorite little bits of statistics. I'll use speed tests as the example, but the same math applies to signal readings, latency pings and pretty much anything you measure one sample at a time.</p>
+<p>Let's assume there's a city broadband office, and someone there sends over a screenshot of 12 speed tests from one neighborhood. Three of them are under 25 Mbps. The email asks one question: is this neighborhood underserved?</p>
+<p>To answer that properly, we need a city where we already know the truth. So let's give this one an internet personality we know inside and out. Most tests come from homes on a fast connection, centered around 250 Mbps. About 15% come from a slow tail centered around 25 Mbps, think old DSL or a laptop two walls away from the router. Across millions of tests, the true median is 226 Mbps and the true 10th percentile is 34 Mbps. Knowing the right answer is the whole trick, because now we can measure exactly how wrong a small sample gets.</p>
+<p>Here's the experiment. Grab 10 random tests from that city, work out the median and the 10th percentile, and write them down. Throw those back, grab another 10, and do it again, 2,000 times in all. Then repeat the whole thing with 20 tests, 30, and on up to 5,000. This is called a Monte Carlo simulation, named after the casino, because it's basically rolling dice over and over until a pattern shows up. My laptop rolled more than 22 million simulated tests for this post and didn't complain once.</p>
+
+<h2>The median settles fast</h2>
+<p>With only 10 tests, the median is all over the place. In 90% of my draws it landed somewhere between 154 and 310 Mbps, and the typical miss was about 14%. Same city, same internet, wildly different answers. That's why one speed test, or even a handful, can't tell you a place has bad internet.</p>
+<p>At 100 tests things calm down a lot. The middle 90% of draws sat between 202 and 251 Mbps, and the typical miss dropped to under 5%. By 1,000 tests it's 218 to 234 Mbps, off by about 1.4%. Pretty cool how quickly that tightens up!</p>
+
+<h2>The 10th percentile takes its time</h2>
+<figure class="figure">
+<h3>The 10th percentile needs about 30 times the samples</h3>
+<p class="sub">Typical miss from the true value, by samples per draw. 2,000 draws at each size.</p>
+<div class="legend"><span><i style="background:var(--fg)"></i>Median</span><span><i style="background:var(--teal)"></i>10th percentile</span></div>
+<div class="chart ss-anim" id="ss-chart"><svg viewBox="0 0 720 380" role="img" aria-labelledby="ss1-t"><title id="ss1-t">Typical miss as a percent of the true value, by number of samples. The median drops below 5% at about 100 samples. The 10th percentile starts at 168% with 10 samples and only drops below 5% at about 2,600.</title><g class="ber-ax"><line x1="64" y1="294.6" x2="640" y2="294.6" stroke="#2A2E33"/><text x="56.0" y="298.6" font-size="12" fill="#8E9499" text-anchor="end">1%</text><line x1="64" y1="259.2" x2="640" y2="259.2" stroke="#2A2E33"/><text x="56.0" y="263.2" font-size="12" fill="#8E9499" text-anchor="end">2%</text><line x1="64" y1="212.4" x2="640" y2="212.4" stroke="#2A2E33"/><text x="56.0" y="216.4" font-size="12" fill="#8E9499" text-anchor="end">5%</text><line x1="64" y1="177.0" x2="640" y2="177.0" stroke="#2A2E33"/><text x="56.0" y="181.0" font-size="12" fill="#8E9499" text-anchor="end">10%</text><line x1="64" y1="141.6" x2="640" y2="141.6" stroke="#2A2E33"/><text x="56.0" y="145.6" font-size="12" fill="#8E9499" text-anchor="end">20%</text><line x1="64" y1="94.8" x2="640" y2="94.8" stroke="#2A2E33"/><text x="56.0" y="98.8" font-size="12" fill="#8E9499" text-anchor="end">50%</text><line x1="64" y1="59.4" x2="640" y2="59.4" stroke="#2A2E33"/><text x="56.0" y="63.4" font-size="12" fill="#8E9499" text-anchor="end">100%</text><line x1="64" y1="24.0" x2="640" y2="24.0" stroke="#2A2E33"/><text x="56.0" y="28.0" font-size="12" fill="#8E9499" text-anchor="end">200%</text><text x="64.0" y="352.0" font-size="12" fill="#8E9499" text-anchor="middle">10</text><text x="165.8" y="352.0" font-size="12" fill="#8E9499" text-anchor="middle">30</text><text x="277.4" y="352.0" font-size="12" fill="#8E9499" text-anchor="middle">100</text><text x="379.2" y="352.0" font-size="12" fill="#8E9499" text-anchor="middle">300</text><text x="490.8" y="352.0" font-size="12" fill="#8E9499" text-anchor="middle">1,000</text><text x="640.0" y="352.0" font-size="12" fill="#8E9499" text-anchor="middle">5,000</text><text x="352.0" y="374.0" font-size="12" fill="#8E9499" text-anchor="middle">samples per draw (log scale)</text><text x="64.0" y="14.0" font-size="12" fill="#8E9499" text-anchor="start">typical miss, % of the true value (log scale)</text><line x1="64" y1="212.4" x2="640" y2="212.4" stroke="#ECEEEF" stroke-width="1.2" stroke-dasharray="5 5"/><text x="70.0" y="230.4" font-size="12" fill="#ECEEEF" text-anchor="start">5%: steady enough</text></g><polyline class="ber-line ber-2023" pathLength="1" points="64.0,159.4 128.2,177.4 165.8,190.1 213.2,202.0 250.8,208.4 277.4,216.3 341.7,236.7 379.2,245.2 426.6,259.7 490.8,277.4 555.1,293.1 640.0,317.4" fill="none" stroke="#ECEEEF" stroke-width="2.5" stroke-linejoin="round"/><polyline class="ber-line ber-2024" pathLength="1" points="64.0,33.0 128.2,80.5 165.8,95.4 213.2,109.1 250.8,119.6 277.4,129.5 341.7,145.3 379.2,156.2 426.6,167.9 490.8,187.1 555.1,206.3 640.0,227.4" fill="none" stroke="#33A6B8" stroke-width="2.5" stroke-linejoin="round"/><g class="ber-note" style="--at:1.3s"><text x="80.9" y="151.4" font-size="12" fill="#ECEEEF" text-anchor="start">median 14%</text><text x="648.0" y="321.4" font-size="12" fill="#ECEEEF" text-anchor="start">0.6%</text></g><g class="ber-note" style="--at:3.4s"><text x="113.2" y="38.7" font-size="12" fill="#33A6B8" text-anchor="start">10th percentile 168%</text><text x="648.0" y="231.4" font-size="12" fill="#33A6B8" text-anchor="start">3.7%</text></g><g class="ber-note" style="--at:1.5s"><circle cx="264.2" cy="212.4" r="6" fill="#ECEEEF"/><text x="264.2" y="236.4" font-size="12" fill="#ECEEEF" text-anchor="middle">~100</text></g><g class="ber-note" style="--at:3.6s"><circle cx="579.6" cy="212.4" r="6" fill="#33A6B8"/><text x="579.6" y="236.4" font-size="12" fill="#33A6B8" text-anchor="middle">~2,600</text></g></svg></div>
+<button class="pct-replay" type="button" hidden>Replay</button>
+<figcaption>Simulated city: 85% of tests from a fast group (median 250 Mbps), 15% from a slow tail (median 25 Mbps). Typical miss = median of |estimate − truth| ÷ truth. Code: data-stories/sample-size, seed 42.</figcaption>
+</figure>
+<p>The 10th percentile is a lot jumpier. With 10 tests, the typical miss was 168%. That sounds impossible until you think about what 10 tests means here. With only 15% of tests coming from the slow tail, about one sample in five (0.85 to the 10th power, roughly 20%) has no slow tests in it at all. Those samples never see the people having a rough time, so their 10th percentile lands way up in the fast crowd.</p>
+<p>It keeps wobbling for a long time. At 100 tests the typical miss is still about 25%. At 1,000 it's 8%. It takes about 2,000 tests to get close to the steadiness the median had at 100.</p>
+<p>That makes sense once you say it out loud. The median gets to use the whole crowd. The 10th percentile lives in the thin end of the distribution, so most of your tests tell it nothing new. You can watch it happen:</p>
+<style>
+.ss-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:0 0 14px}
+.ss-seg{display:inline-flex;border:1px solid var(--line-2);border-radius:6px;overflow:hidden}
+.ss-seg button,.ss-btn{font-family:var(--mono);font-size:12px;color:var(--fg-2);background:none;border:0;padding:6px 12px;cursor:pointer}
+.ss-seg button+button{border-left:1px solid var(--line-2)}
+.ss-seg button[aria-pressed="true"]{background:var(--sage);color:var(--bg)}
+.ss-btn{border:1px solid var(--line-2);border-radius:6px;color:var(--sage)}
+.ss-btn:hover,.ss-seg button:hover{border-color:var(--sage)}
+.ss-read{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:14px;font-variant-numeric:tabular-nums}
+.ss-stat{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:2px}
+.ss-stat span{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ss-stat b{font-family:var(--display);font-weight:700;font-size:22px;color:var(--fg)}
+.ss-stat.p10 b{color:var(--teal)}
+@media (max-width:600px){#ss-fig .chart svg{min-width:0}#ss-svg text{font-size:20px}}
+.ss-stat small{font-size:13px;color:var(--muted)}
+</style>
+<figure class="figure" id="ss-fig">
+<h3 id="ss-fig-title">10 samples per round</h3>
+<p class="sub">Each round grabs fresh samples from the same city and leaves a tick where its median and 10th percentile landed. A tight pile of ticks means a number you can trust. Download speed, Mbps (log scale).</p>
+<div class="ss-ctl">
+<div class="ss-seg" role="group" aria-label="Samples per round">
+<button type="button" data-n="10" aria-pressed="true">10</button><button type="button" data-n="100" aria-pressed="false">100</button><button type="button" data-n="1000" aria-pressed="false">1,000</button>
+</div>
+<button type="button" class="ss-btn" id="ss-play">Pause</button>
+<button type="button" class="ss-btn" id="ss-replay">Replay</button>
+</div>
+<div class="legend"><span><i style="background:var(--sage)"></i>This round's samples</span><span><i style="background:var(--fg)"></i>Median</span><span><i style="background:var(--teal)"></i>10th percentile</span></div>
+<div class="chart"><svg id="ss-svg" viewBox="0 0 720 420" role="img" aria-labelledby="ss-svg-t"><title id="ss-svg-t">Samples drawn from a city with a true median of 226 Mbps and a true 10th percentile of 34 Mbps. Each round's median and 10th percentile leave a tick mark. With 10 samples the ticks scatter widely. With 1,000 they pile up near the true values, and the 10th percentile ticks stay wider than the median ticks.</title></svg></div>
+<div class="ss-read" aria-live="polite">
+<div class="ss-stat"><span>Median · middle 90% of rounds</span><b id="ss-r-med">–</b><small id="ss-r-med-s">true value 226 Mbps</small></div>
+<div class="ss-stat p10"><span>10th percentile · middle 90% of rounds</span><b id="ss-r-p10">–</b><small id="ss-r-p10-s">true value 34 Mbps</small></div>
+</div>
+<figcaption>Simulated city, same settings as simulate.py: 85% of samples from a fast group (median 250 Mbps), 15% from a slow tail (median 25 Mbps). Up to 40 rounds shown.</figcaption>
+</figure>
+
+
+<h2>Different questions need different amounts of data</h2>
+<p>So "how many tests is enough?" really depends on the question. Here's what our city says for a few common ones. "Steady" here means the typical miss is around 5% or less.</p>
+<div class="scroll" style="overflow-x:auto"><table class="data">
+<thead><tr><th>The question</th><th>The number to watch</th><th>Samples for a steady answer</th></tr></thead>
+<tbody>
+<tr><td>What does a typical test look like?</td><td>Median</td><td>~100</td></tr>
+<tr><td>How fast is the fast end?</td><td>90th percentile</td><td>~100 to 200</td></tr>
+<tr><td>Who's having a rough time?</td><td>10th percentile</td><td>~2,000 to 3,000</td></tr>
+<tr><td>What share of tests come in under 25 Mbps?</td><td>A share (7.5% here)</td><td>~1,000 (lands between 6% and 9%)</td></tr>
+<tr><td>Is town A faster than town B?</td><td>Median in each</td><td>~300 per town</td></tr>
+<tr><td>Did the slow end get worse?</td><td>10th percentile, before and after</td><td>~2,000 per period</td></tr>
+</tbody></table></div>
+<p>Comparisons are where people get caught out. Let's assume a second city whose median is about 10% lower (204 vs 226 Mbps). With 100 tests from each, you'd put them in the right order only 86% of the time. At 300 each it's 97%. Asking the same thing about the slow end is much harder. If the slow tail gets 20% slower, the 10th percentile only drops from 34 to 27 Mbps, and 300 tests per city gets the order right just 75% of the time. That's one wrong call in four, delivered with total confidence. It takes about 2,000 per city to reach 96%.</p>
+<p>Slicing eats your sample, too. Say you have 1,000 tests and want to see them by hour of the day. That's about 42 tests an hour, so each hour's median is off by around 7% and each hour's 10th percentile by something like 40%. Slice by day of the week and hour and you're down to about six tests per slice. At that point the chart is mostly a very pretty random number generator.</p>
+
+<h2>Why the 10th percentile is so stubborn</h2>
+<p>Time to put on the nerd glasses. If formulas aren't your thing, skip to the end and I promise I won't take it personally.</p>
+<p>First, the square root. The wobble in almost any estimate shrinks with the square root of the number of tests. I think of it as the universe's tax on certainty. Four times the tests only halves the error, so going from 100 to 400 tests buys the same improvement as going from 1,000 to 4,000. That's why the curves flatten out: every extra bit of steadiness costs more tests than the last one did.</p>
+<div class="formula" role="math" aria-label="error is proportional to 1 over the square root of n" style="margin:1.6em 0;padding:18px 16px;overflow-x:auto;border-radius:12px;background:var(--raise);border:1px solid var(--line);color:var(--fg);font-size:21px"><math display="block"><mtext>error</mtext><mo>&#x221D;</mo><mfrac><mn>1</mn><msqrt><mi>n</mi></msqrt></mfrac></math></div>
+<p>Second, how crowded the data is where you're measuring. Statisticians have a handy approximation for the standard error of any percentile:</p>
+<div class="formula" role="math" aria-label="standard error of the p-th percentile is approximately 1 over f of q p, times the square root of p times 1 minus p, over n" style="margin:1.6em 0;padding:18px 16px;overflow-x:auto;border-radius:12px;background:var(--raise);border:1px solid var(--line);color:var(--fg);font-size:21px"><math display="block"><mrow><mi>SE</mi><mo>(</mo><msub><mover accent="true"><mi>q</mi><mo>^</mo></mover><mi>p</mi></msub><mo>)</mo></mrow><mo>&#x2248;</mo><mfrac><mn>1</mn><mrow><mi>f</mi><mo>(</mo><msub><mi>q</mi><mi>p</mi></msub><mo>)</mo></mrow></mfrac><msqrt><mfrac><mrow><mi>p</mi><mo>(</mo><mn>1</mn><mo>&#x2212;</mo><mi>p</mi><mo>)</mo></mrow><mi>n</mi></mfrac></msqrt></math></div>
+<p>Here <em>p</em> is the percentile as a fraction (0.5 for the median, 0.1 for the 10th), <em>n</em> is the number of samples, and <em>f</em>(<em>q<sub>p</sub></em>) is the density of samples right at that value. Density is the part that matters. If lots of samples sit near a value, a few extra barely move it. If the data is thin there, each new sample can shove the estimate a long way.</p>
+<p>In our city, the median sits in the middle of the fast crowd, where tests are packed in tight. The 10th percentile lands in the thin valley between the slow tail and the fast crowd, right where the two groups barely overlap. It's the loneliest spot in the whole distribution. The <em>p</em>(1 − <em>p</em>) part actually helps the 10th percentile a little (0.09 against 0.25 for the median). Density doesn't. Divide the standard error by the value itself and multiply by √<em>n</em>, and you get 0.68 for the median and 3.84 for the 10th percentile. So for the same number of tests, the 10th percentile is about 5.7 times as uncertain.</p>
+<p>Put those together. Because error shrinks with √<em>n</em>, shrinking it 5.7 times takes 5.7 squared, or about 32 times, the samples:</p>
+<div class="formula" role="math" aria-label="n for the 10th percentile is approximately n for the median times 3.84 over 0.68 squared, about 100 times 32, which is 3,200" style="margin:1.6em 0;padding:18px 16px;overflow-x:auto;border-radius:12px;background:var(--raise);border:1px solid var(--line);color:var(--fg);font-size:21px"><math display="block"><msub><mi>n</mi><mtext>p10</mtext></msub><mo>&#x2248;</mo><msub><mi>n</mi><mtext>median</mtext></msub><mo>&#xD7;</mo><msup><mrow><mo>(</mo><mfrac><mn>3.84</mn><mn>0.68</mn></mfrac><mo>)</mo></mrow><mn>2</mn></msup><mo>&#x2248;</mo><mn>100</mn><mo>&#xD7;</mo><mn>32</mn><mo>=</mo><mn>3,200</mn></math></div>
+<p>That's right where the simulation landed, which made me happier than it probably should have.</p>
+<p>There's a plainer way to see it, too. Only about one test in ten falls below the 10th percentile. With 100 tests, roughly ten of them are doing all the work. With 10 tests, it's one.</p>
+<p>Real data makes all of this harder. The math assumes every sample is an independent draw, and real samples cluster. I think about it the way I think about cell coverage: pepperoni on a pizza. You want the pepperonis to touch with no overlap, so the whole pie is covered. Stack ten of them in one spot and you've still only covered one bite. One household running several tests in a row is a stack, and so is one busy spot holding a big share of an area's tests (I ran into exactly that in <a href="averages-lie.html">Texas</a>). Statisticians call the number of samples that really count the effective sample size, and stacks shrink it. So I'd treat the numbers above as a floor.</p>
+
+<h2>What I took from it</h2>
+<p>Before I trust a number, I ask which number it is. A median from a few hundred tests is usually solid. A 10th percentile from the same few hundred is a decent first guess, and I'd show its range before I'd show it as a single value.</p>
+<p>The real world adds its own wrinkles. Tests aren't spread evenly across homes or hours, and a real city's slow tail might be bigger or smaller than the 15% we assumed. So treat 100 and 2,000 as the shape of the answer, and run the simulator with your own numbers before you lean on them.</p>
+<p>Back to that email with the 12 tests. In the city we assumed, only 7.5% of tests come in under 25 Mbps, and three slow tests out of 12 still shows up about one time in 18. So my reply would be friendly and a little boring: those three tests are worth a look, and they aren't a verdict yet. Collect a few hundred tests across different days and times of day, and then we can talk about the slow end with a straight face.</p>
+
+<h2>Run it yourself</h2>
+<p>Everything is in <a href="https://github.com/davenmook/data-stories/tree/main/sample-size">data-stories/sample-size</a>. Run <code>python3 simulate.py</code> and it rebuilds the table behind the chart. No downloads needed. Try <code>--seed 7</code> and you'll get different draws with the same overall shape. <code>python3 use_cases.py</code> reruns the numbers in the table above.</p>
+<p class="sources"><strong>Sources:</strong> the city is simulated. Its settings live at the top of <code>simulate.py</code>.</p>
+</article>
+<aside class="follow" aria-label="Follow along">
+<div class="follow-copy">
+<span class="eyebrow">Want the next one?</span>
+<p>I share every new note and data story on LinkedIn, usually on Wednesdays. Follow along there and the next one finds you.</p>
+</div>
+<a class="btn btn-primary follow-btn" href="https://www.linkedin.com/in/noeldave" target="_blank" rel="me noopener">Follow on LinkedIn<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h7v7M13 3L4 12"/></svg></a>
+</aside>
+
+<section class="next" aria-label="More notes">
+<a class="talk" href="percentiles.html"><span class="meta">NEXT · DATA QUALITY</span><span class="title">Percentiles: the 10th tells you who's suffering</span><p>The median shows you the typical test. The 10th percentile shows you the people having a rough time.</p></a>
+<a class="talk" href="averages-lie.html"><span class="meta">NEXT · DATA QUALITY</span><span class="title">Averages lie</span><p>Why the median tells you more about your internet speed than the mean ever will.</p></a>
+</section>
+</main>
+<footer class="footer" id="contact">
+<div class="wrap footer-top">
+<div class="footer-cta">
+<strong>Want to talk data, networks, mentoring, or customer success? Say hi.</strong>
+<span class="email">davidnmook@gmail.com</span>
+<small>I'll probably overthink my reply.</small>
+</div>
+<div class="footer-links">
+<a href="https://www.linkedin.com/in/noeldave">LinkedIn</a>
+<a href="https://github.com/davenmook">GitHub</a>
+<a href="../about.html">About</a>
+<a href="#top">Back to top</a>
+</div>
+</div>
+<div class="wrap footer-fine">© 2026 Dave Noel · Views are my own · Data from public sources, credited on every chart.</div>
+</footer>
+<script>
+(function(){if(window.matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
+var c=document.getElementById('ss-chart'),b=c.parentNode.querySelector('.pct-replay');c.classList.add('ber-wait');
+function play(){c.classList.remove('ber-play');void c.getBoundingClientRect();c.classList.add('ber-play');}
+new IntersectionObserver(function(e,o){if(e[0].isIntersecting){play();o.disconnect();b.hidden=false;}},{threshold:0.4}).observe(c);
+b.addEventListener('click',play);})();
+</script>
+<script>
+(function(){
+  var NS="http://www.w3.org/2000/svg", svg=document.getElementById("ss-svg");
+  var FM=250, FS=.45, SM=25, SS=.7, SH=.15, TRUE_MED=226, TRUE_P10=34, ROUNDS=40;
+  var X0=40, X1=700, LO=Math.log(5), HI=Math.log(1000);
+  function X(v){ return X0+(Math.log(v)-LO)/(HI-LO)*(X1-X0); }
+  var still=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // seeded RNG so every visitor sees the same rounds
+  var seed=42; function rand(){ seed|=0; seed=seed+0x6D2B79F5|0; var t=Math.imul(seed^seed>>>15,1|seed);
+    t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }
+  function gauss(){ var u=1-rand(), v=rand(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+  function sample(){ return rand()<SH ? SM*Math.exp(SS*gauss()) : FM*Math.exp(FS*gauss()); }
+  function pct(sorted,p){ var pos=(sorted.length-1)*p, i=Math.floor(pos), f=pos-i;
+    return i+1<sorted.length ? sorted[i]+(sorted[i+1]-sorted[i])*f : sorted[i]; }
+  function clampV(v){ return Math.min(1000,Math.max(5,v)); }
+
+  function el(tag,attrs,parent){ var e=document.createElementNS(NS,tag), st=""; for(var k in attrs){ var v=String(attrs[k]); if((k==="fill"||k==="stroke")&&v.indexOf("var(")===0) st+=k+":"+v+";"; else e.setAttribute(k,v); } if(st) e.setAttribute("style",st); (parent||svg).appendChild(e); return e; }
+  function text(x,y,s,attrs,parent){ var a={x:x,y:y,"font-size":11,fill:"var(--muted)"}; for(var k in attrs) a[k]=attrs[k]; var e=el("text",a,parent); e.textContent=s; return e; }
+
+  // static layer: density curve, axes, history rows
+  var gauss_pdf=function(u,m,s){ return Math.exp(-(u-m)*(u-m)/(2*s*s))/(s*Math.sqrt(2*Math.PI)); };
+  var pts=[], top=30, base=128, maxd=0, dens=[];
+  for(var i=0;i<=200;i++){ var u=LO+(HI-LO)*i/200; var d=(1-SH)*gauss_pdf(u,Math.log(FM),FS)+SH*gauss_pdf(u,Math.log(SM),SS); dens.push([u,d]); if(d>maxd)maxd=d; }
+  dens.forEach(function(p,i){ pts.push((X0+(p[0]-LO)/(HI-LO)*(X1-X0)).toFixed(1)+","+(base-(p[1]/maxd)*(base-top)).toFixed(1)); });
+  el("polygon",{points:X0+","+base+" "+pts.join(" ")+" "+X1+","+base,fill:"var(--sage)","fill-opacity":.16});
+  el("polyline",{points:pts.join(" "),fill:"none",stroke:"var(--sage)","stroke-width":1.5});
+  text(X(25),top+44,"slow tail",{"text-anchor":"middle"}); text(X1,top+50,"fast crowd",{"text-anchor":"end"});
+
+  [10,25,50,100,250,500,1000].forEach(function(v){
+    el("line",{x1:X(v),y1:base,x2:X(v),y2:390,stroke:"var(--line)","stroke-width":1});
+    text(v>=1000?X(v)+12:X(v),408,v>=1000?"1,000":String(v),{"text-anchor":v>=1000?"end":"middle"});
+  });
+  el("line",{x1:X0,y1:base,x2:X1,y2:base,stroke:"var(--line-2)"});
+  // true value guides through everything
+  el("line",{x1:X(TRUE_MED),y1:top-2,x2:X(TRUE_MED),y2:390,stroke:"var(--fg)","stroke-dasharray":"3 4","stroke-width":1,opacity:.6});
+  el("line",{x1:X(TRUE_P10),y1:top-2,x2:X(TRUE_P10),y2:390,stroke:"var(--teal)","stroke-dasharray":"3 4","stroke-width":1,opacity:.8});
+  text(X(TRUE_MED)+6,top+6,"true median 226",{fill:"var(--fg)"});
+  text(X(TRUE_P10)+6,top+6,"true 10th pct 34",{fill:"var(--teal)"});
+
+  text(X0,244,"THIS ROUND",{"letter-spacing":".08em"});
+  text(X0,300,"MEDIAN OF EACH ROUND",{"letter-spacing":".08em"});
+  text(X0,356,"10TH PERCENTILE OF EACH ROUND",{"letter-spacing":".08em"});
+  el("rect",{x:X0,y:306,width:X1-X0,height:26,fill:"var(--line)",opacity:.35,rx:3});
+  el("rect",{x:X0,y:362,width:X1-X0,height:26,fill:"var(--line)",opacity:.35,rx:3});
+
+  var gDots=el("g",{}), gRound=el("g",{}), gMed=el("g",{}), gP10=el("g",{}), gBands=el("g",{});
+  var spreadMed=el("rect",{x:0,y:304,width:0,height:30,fill:"none",stroke:"var(--fg)","stroke-width":1.2,rx:4,opacity:0}, gBands);
+  var spreadP10=el("rect",{x:0,y:360,width:0,height:30,fill:"none",stroke:"var(--teal)","stroke-width":1.2,rx:4,opacity:0}, gBands);
+
+  var N=10, history=[], timer=null, playing=!still, round=0;
+  var rMed=document.getElementById("ss-r-med"), rP10=document.getElementById("ss-r-p10"), title=document.getElementById("ss-fig-title");
+  function fmt(v){ return Math.round(v).toLocaleString("en-US"); }
+  function band(arr){ var s=arr.slice().sort(function(a,b){return a-b;}); return [pct(s,.05),pct(s,.95)]; }
+
+  function drawRound(animate){
+    var xs=[]; for(var i=0;i<N;i++) xs.push(sample());
+    var s=xs.slice().sort(function(a,b){return a-b;}), med=pct(s,.5), p10=pct(s,.1);
+    while(gDots.firstChild) gDots.removeChild(gDots.firstChild);
+    while(gRound.firstChild) gRound.removeChild(gRound.firstChild);
+    var r=N<=10?6:N<=100?3.6:1.8, op=N<=100?.9:.6;
+    xs.forEach(function(v,i){
+      var cy=158+rand()*64, c=el("circle",{cx:X(clampV(v)).toFixed(1),cy:cy.toFixed(1),r:r,fill:"var(--sage)",opacity:op},gDots);
+      if(animate){ c.animate([{transform:"translateY(-120px)",opacity:0},{transform:"none",opacity:op}],
+        {duration:420,delay:Math.min(600,i*(600/N)),easing:"cubic-bezier(.3,.9,.4,1)",fill:"backwards"}); }
+    });
+    var delay=animate?850:0;
+    function mark(){
+      el("line",{x1:X(med),y1:150,x2:X(med),y2:230,stroke:"var(--fg)","stroke-width":2.5},gRound);
+      el("line",{x1:X(clampV(p10)),y1:150,x2:X(clampV(p10)),y2:230,stroke:"var(--teal)","stroke-width":2.5},gRound);
+      history.push([med,p10]); if(history.length>ROUNDS) history.shift();
+      drawHistory(animate);
+    }
+    if(animate) setTimeout(mark,delay); else mark();
+  }
+
+  function drawHistory(animate){
+    [gMed,gP10].forEach(function(g){ while(g.firstChild) g.removeChild(g.firstChild); });
+    history.forEach(function(h,i){
+      var last=i===history.length-1, o=last?1:.45;
+      var a=el("line",{x1:X(clampV(h[0])),y1:308,x2:X(clampV(h[0])),y2:330,stroke:"var(--fg)","stroke-width":last?3:1.6,opacity:o},gMed);
+      var b=el("line",{x1:X(clampV(h[1])),y1:364,x2:X(clampV(h[1])),y2:386,stroke:"var(--teal)","stroke-width":last?3:1.6,opacity:o},gP10);
+      if(last&&animate){ [a,b].forEach(function(t){ t.animate([{transform:"translateY(-16px)",opacity:0},{transform:"none",opacity:1}],{duration:300,easing:"ease-out"}); }); }
+    });
+    var m=band(history.map(function(h){return h[0];})), p=band(history.map(function(h){return h[1];}));
+    if(history.length>=5){
+      spreadMed.setAttribute("x",X(clampV(m[0]))-5); spreadMed.setAttribute("width",Math.max(10,X(clampV(m[1]))-X(clampV(m[0]))+10)); spreadMed.setAttribute("opacity",.7);
+      spreadP10.setAttribute("x",X(clampV(p[0]))-5); spreadP10.setAttribute("width",Math.max(10,X(clampV(p[1]))-X(clampV(p[0]))+10)); spreadP10.setAttribute("opacity",.8);
+      rMed.textContent=fmt(m[0])+" to "+fmt(m[1])+" Mbps"; rP10.textContent=fmt(p[0])+" to "+fmt(p[1])+" Mbps";
+    } else { spreadMed.setAttribute("opacity",0); spreadP10.setAttribute("opacity",0); rMed.textContent="collecting rounds…"; rP10.textContent="collecting rounds…"; }
+    document.getElementById("ss-r-med-s").textContent="true value 226 Mbps · round "+history.length+" of "+ROUNDS;
+    document.getElementById("ss-r-p10-s").textContent="true value 34 Mbps · round "+history.length+" of "+ROUNDS;
+  }
+
+  function stop(){ clearInterval(timer); timer=null; }
+  function start(){ stop(); timer=setInterval(function(){ if(history.length>=ROUNDS){ stop(); setPlay(false); return; } drawRound(true); }, N>=1000?1500:1300); }
+  function setPlay(on){ playing=on; document.getElementById("ss-play").textContent=on?"Pause":"Play"; if(on) start(); else stop(); }
+  function reset(fill){ stop(); seed=42+N; history=[]; title.textContent=(N===1000?"1,000":N)+" samples per round";
+    if(fill){ for(var i=0;i<ROUNDS;i++) drawRound(false); } else { drawHistory(false); while(gDots.firstChild) gDots.removeChild(gDots.firstChild); while(gRound.firstChild) gRound.removeChild(gRound.firstChild); } }
+
+  // first frame is complete: all 40 rounds drawn. Motion then replays them one by one once the chart is on screen.
+  reset(true);
+  if(!still && "IntersectionObserver" in window){
+    new IntersectionObserver(function(e,o){ if(e[0].isIntersecting){ o.disconnect(); reset(false); drawRound(true); setPlay(true); } },{threshold:.4}).observe(svg);
+  } else { setPlay(false); }
+
+  document.querySelectorAll(".ss-seg button").forEach(function(b){ b.addEventListener("click",function(){
+    document.querySelectorAll(".ss-seg button").forEach(function(x){ x.setAttribute("aria-pressed",x===b?"true":"false"); });
+    N=+b.dataset.n; if(still){ reset(true); } else { reset(false); drawRound(true); setPlay(true); }
+  }); });
+  document.getElementById("ss-play").addEventListener("click",function(){ if(history.length>=ROUNDS&&!playing){ reset(false); drawRound(!still); } setPlay(!playing); });
+  document.getElementById("ss-replay").addEventListener("click",function(){ if(still){ reset(true); return; } reset(false); drawRound(true); setPlay(true); });
+})();
+</script>
+<script src="../assets/js/theme.js?v=20261014t" defer></script>
+</body>
+</html>
