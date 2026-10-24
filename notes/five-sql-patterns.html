@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Five SQL patterns I use every week · Dave Noel</title>
+<meta name="description" content="Five small SQL habits that do most of the heavy lifting, each run on Texas fixed broadband tiles in DuckDB. Plus a county whose average doubled while its median barely moved.">
+<link rel="canonical" href="https://davenoel.me/notes/five-sql-patterns.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Overthinking the Internet">
+<meta property="og:title" content="Five SQL patterns I use every week · Dave Noel">
+<meta property="og:description" content="Five small SQL habits that do most of the heavy lifting, each run on Texas fixed broadband tiles in DuckDB. Plus a county whose average doubled while its median barely moved.">
+<meta property="og:url" content="https://davenoel.me/notes/five-sql-patterns.html">
+<meta property="og:image" content="https://davenoel.me/assets/img/og/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#131517">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preload" href="../assets/fonts/bricolage-grotesque-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script>try{if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
+<link rel="stylesheet" href="../assets/css/site.css?v=20261018a">
+<!-- PostHog: product analytics, web analytics, session replay, experiments -->
+<script async src="https://us-assets.i.posthog.com/static/array.js" onload="window.posthog&&posthog.init('phc_wPRDMiWxnPrd356Rk4mPPCwphxNJaoqS666aZrGCzYdj',{api_host:'https://us.i.posthog.com',person_profiles:'identified_only'})"></script>
+</head>
+<body>
+<header id="top"><nav class="wrap nav" aria-label="Main">
+<a class="brand" href="../"><img src="../assets/img/avatar-ring.png" alt="" width="40" height="40"><span>Overthinking the Internet</span></a>
+<div class="nav-links">
+<a href="../index.html#stories">Data stories</a>
+<a href="../index.html#notes" aria-current="page">Notes</a>
+<a href="../talks.html">Talks</a>
+<a href="../about.html">About</a>
+<a class="nav-social" href="https://www.linkedin.com/in/noeldave" target="_blank" rel="me noopener" aria-label="Dave Noel on LinkedIn (opens in a new tab)">LinkedIn<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h7v7M13 3L4 12"/></svg></a>
+<button class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+<a class="btn btn-primary" href="#contact">Say hi</a>
+</div>
+</nav></header>
+<main class="wrap reading">
+<div class="article-head">
+<div class="eyebrow">Notes · SQL and Python</div>
+<h1>Five SQL patterns <em>I use every week</em></h1>
+<p class="dek">Five small habits, five tiny examples on Texas fixed tiles. Plus a county that doubled its speed. Sort of.</p>
+<div class="byline"><img src="../assets/img/avatar-ring.png" alt="" width="36" height="36"><span>Dave Noel · 7 min read</span></div>
+</div>
+
+<article class="prose">
+<p>These are five small SQL habits that do most of the heavy lifting in my week. None of them is fancy. Every one of them saves me from a mess I used to make by hand!</p>
+<p>If they look familiar, that's because they all snuck into the <a href="sql-or-python.html">SQL or Python? Yes.</a> note already. This time each one gets its own little example.</p>
+<p>Everything below runs in DuckDB on Ookla open data, <strong>fixed tiles</strong> (home and business internet, not phones), Texas, all four quarters of 2025. A tile is a patch of map about 600 m across. It carries an average speed and a count of tests, so anything I call "per test" is really a test-weighted average of tile averages.</p>
+
+<h2>1. Query the file where it sits</h2>
+<p>You don't have to load a parquet file into a database first. DuckDB reads it like a table, right off the disk.</p>
+<pre class="code" data-lang="SQL"><code><span class="tk-k">SELECT</span>
+    quarter,
+    <span class="tk-f">COUNT</span>(*) <span class="tk-k">AS</span> tiles,
+    <span class="tk-f">SUM</span>(tests) <span class="tk-k">AS</span> tests
+<span class="tk-k">FROM</span>
+    <span class="tk-f">read_parquet</span>(<span class="tk-s">'../data/texas_fixed_2025.parquet'</span>)
+<span class="tk-k">GROUP BY</span>
+    quarter
+<span class="tk-k">ORDER BY</span>
+    quarter
+;</code></pre>
+<table class="data">
+<thead><tr><th>Quarter</th><th>Tiles</th><th>Tests</th></tr></thead>
+<tbody>
+<tr><td>Q1</td><td>173,520</td><td>1,989,312</td></tr>
+<tr><td>Q2</td><td>184,214</td><td>2,185,376</td></tr>
+<tr><td>Q3</td><td>184,428</td><td>2,171,576</td></tr>
+<tr><td>Q4</td><td>185,223</td><td>2,245,954</td></tr>
+</tbody>
+</table>
+<p>That's about 727,000 rows and it comes back in well under a second on my laptop. These counts are for the Texas bounding box, which spills into a few neighbors, so they run higher than the county numbers below.</p>
+
+<h2>2. GROUP BY ALL</h2>
+<p>This one tells SQL to group by every column that isn't wrapped in a SUM or a COUNT. Add a column to the SELECT and the GROUP BY keeps up on its own. No more "column must appear in the GROUP BY clause" errors!</p>
+<pre class="code" data-lang="SQL"><code><span class="tk-k">SELECT</span>
+    county,
+    quarter,
+    <span class="tk-f">COUNT</span>(*) <span class="tk-k">AS</span> tiles,
+    <span class="tk-f">SUM</span>(tests) <span class="tk-k">AS</span> tests,
+    <span class="tk-f">ROUND</span>(<span class="tk-f">MEDIAN</span>(avg_d_kbps) / <span class="tk-n">1000</span>) <span class="tk-k">AS</span> median_tile_mbps
+<span class="tk-k">FROM</span>
+    <span class="tk-f">read_parquet</span>(<span class="tk-s">'../data/tx_tiles_by_county.parquet'</span>)
+<span class="tk-k">WHERE</span>
+    county <span class="tk-k">IN</span> (<span class="tk-s">'Harris'</span>, <span class="tk-s">'Travis'</span>, <span class="tk-s">'Loving'</span>)
+<span class="tk-k">GROUP BY ALL</span>
+<span class="tk-k">ORDER BY</span>
+    county,
+    quarter
+;</code></pre>
+<table class="data">
+<thead><tr><th>Median tile, Mbps</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th></tr></thead>
+<tbody>
+<tr><td>Harris</td><td>351</td><td>356</td><td>368</td><td>388</td></tr>
+<tr><td>Travis</td><td>352</td><td>352</td><td>353</td><td>377</td></tr>
+<tr><td>Loving</td><td>86</td><td>73</td><td>92</td><td>81</td></tr>
+</tbody>
+</table>
+<p>I flipped the quarters into columns to fit it on the page; the query returns one row per county and quarter.</p>
+<p>Loving County is in there on purpose. It had 346 tests in Q4, against Harris County's 230,210, so its median wobbles from quarter to quarter. A median over a few hundred tiles is a lot shakier than one over ten thousand.</p>
+
+<h2>3. FILTER for conditional counts</h2>
+<p>The old way is to write <code>SUM(CASE WHEN ... THEN tests ELSE 0 END)</code> for every column you want. FILTER says the same thing in plain words, and you can put several of them side by side in one pass over the data. (DuckDB also lets the last line reuse <code>tests_under_100</code> by name. Most other databases make you write it out again.)</p>
+<pre class="code" data-lang="SQL"><code><span class="tk-k">SELECT</span>
+    county,
+    <span class="tk-f">SUM</span>(tests) <span class="tk-k">AS</span> tests,
+    <span class="tk-f">SUM</span>(tests) <span class="tk-k">FILTER</span> (<span class="tk-k">WHERE</span> avg_d_kbps &lt; <span class="tk-n">100000</span>) <span class="tk-k">AS</span> tests_under_100,
+    <span class="tk-f">ROUND</span>(<span class="tk-n">100.0</span> * tests_under_100 / <span class="tk-f">SUM</span>(tests), <span class="tk-n">1</span>) <span class="tk-k">AS</span> pct_under_100
+<span class="tk-k">FROM</span>
+    <span class="tk-f">read_parquet</span>(<span class="tk-s">'../data/tx_tiles_by_county.parquet'</span>)
+<span class="tk-k">WHERE</span>
+    quarter = <span class="tk-n">4</span>
+<span class="tk-k">GROUP BY ALL</span>
+<span class="tk-k">HAVING</span>
+    <span class="tk-f">SUM</span>(tests) &gt;= <span class="tk-n">5000</span>
+<span class="tk-k">ORDER BY</span>
+    pct_under_100 <span class="tk-k">DESC</span>
+<span class="tk-k">LIMIT</span> <span class="tk-n">5</span>
+;</code></pre>
+<table class="data">
+<thead><tr><th>County</th><th>Tests, Q4 2025</th><th>In tiles under 100 Mbps</th><th>Share</th></tr></thead>
+<tbody>
+<tr><td>Wood</td><td>5,292</td><td>1,245</td><td>23.5%</td></tr>
+<tr><td>Wise</td><td>8,109</td><td>1,663</td><td>20.5%</td></tr>
+<tr><td>Hunt</td><td>7,722</td><td>1,412</td><td>18.3%</td></tr>
+<tr><td>Henderson</td><td>6,968</td><td>1,153</td><td>16.5%</td></tr>
+<tr><td>Grayson</td><td>9,252</td><td>1,415</td><td>15.3%</td></tr>
+</tbody>
+</table>
+<p>Read the "under 100 Mbps" column carefully. It counts tests in tiles whose <em>average</em> download is under 100 Mbps. Some of those tests were faster than 100 and some tiles above the line hold slow tests, because the tile average is all the open data gives us. And these are tests, not homes, so a house that tests a lot counts a lot (that's the whole <a href="which-samples.html">sampling note</a>).</p>
+
+<h2>4. Running totals with a window</h2>
+<p>How many Texas counties does it take to cover half of all the fixed tests? Sort the counties, then keep a running sum. A window function does that without collapsing the rows.</p>
+<pre class="code" data-lang="SQL"><code><span class="tk-k">WITH</span> by_county <span class="tk-k">AS</span> (
+    <span class="tk-k">SELECT</span>
+        county,
+        <span class="tk-f">SUM</span>(tests) <span class="tk-k">AS</span> tests
+    <span class="tk-k">FROM</span>
+        <span class="tk-f">read_parquet</span>(<span class="tk-s">'../data/tx_tiles_by_county.parquet'</span>)
+    <span class="tk-k">WHERE</span>
+        quarter = <span class="tk-n">4</span>
+    <span class="tk-k">GROUP BY ALL</span>
+)
+
+<span class="tk-k">SELECT</span>
+    county,
+    tests,
+    <span class="tk-f">ROW_NUMBER</span>() <span class="tk-k">OVER</span> (<span class="tk-k">ORDER BY</span> tests <span class="tk-k">DESC</span>) <span class="tk-k">AS</span> rank,
+    <span class="tk-f">ROUND</span>(
+        <span class="tk-n">100.0</span> * <span class="tk-f">SUM</span>(tests) <span class="tk-k">OVER</span> (<span class="tk-k">ORDER BY</span> tests <span class="tk-k">DESC</span> <span class="tk-k">ROWS UNBOUNDED PRECEDING</span>)
+        / <span class="tk-f">SUM</span>(tests) <span class="tk-k">OVER</span> (),
+        <span class="tk-n">1</span>
+    ) <span class="tk-k">AS</span> running_pct
+<span class="tk-k">FROM</span>
+    by_county
+<span class="tk-k">ORDER BY</span>
+    tests <span class="tk-k">DESC</span>
+<span class="tk-k">LIMIT</span> <span class="tk-n">8</span>
+;</code></pre>
+<table class="data">
+<thead><tr><th>County</th><th>Rank</th><th>Tests, Q4 2025</th><th>Running share</th></tr></thead>
+<tbody>
+<tr><td>Harris</td><td>1</td><td>230,210</td><td>13.0%</td></tr>
+<tr><td>Collin</td><td>2</td><td>119,578</td><td>19.7%</td></tr>
+<tr><td>Tarrant</td><td>3</td><td>114,047</td><td>26.2%</td></tr>
+<tr><td>Dallas</td><td>4</td><td>110,530</td><td>32.4%</td></tr>
+<tr><td>Bexar</td><td>5</td><td>92,448</td><td>37.6%</td></tr>
+<tr><td>Denton</td><td>6</td><td>88,962</td><td>42.6%</td></tr>
+<tr><td>Travis</td><td>7</td><td>87,684</td><td>47.6%</td></tr>
+<tr><td>Fort Bend</td><td>8</td><td>79,742</td><td>52.1%</td></tr>
+</tbody>
+</table>
+<p>Eight counties out of 254 hold more than half of the state's fixed tests. That's mostly where people live, and it's a good reason to check which counties are driving any statewide number before you quote it.</p>
+<p>The empty <code>OVER ()</code> is the other half of the trick. It's the total over every row, so you can divide by it without a second query.</p>
+
+<h2>5. CTEs that stack small steps</h2>
+<p>A CTE is a named step (<code>WITH this AS (...)</code>). Stack a few and the query reads top to bottom like a recipe, and you can run any step on its own when the answer looks weird. Which it did here!</p>
+<pre class="code" data-lang="SQL"><code><span class="tk-k">WITH</span> tiles <span class="tk-k">AS</span> (
+    <span class="tk-p">-- just the columns we need, in Mbps</span>
+    <span class="tk-k">SELECT</span>
+        county,
+        quarter,
+        tests,
+        avg_d_kbps / <span class="tk-n">1000.0</span> <span class="tk-k">AS</span> d_mbps
+    <span class="tk-k">FROM</span>
+        <span class="tk-f">read_parquet</span>(<span class="tk-s">'../data/tx_tiles_by_county.parquet'</span>)
+),
+
+county_quarter <span class="tk-k">AS</span> (
+    <span class="tk-p">-- test-weighted mean per county and quarter</span>
+    <span class="tk-k">SELECT</span>
+        county,
+        quarter,
+        <span class="tk-f">SUM</span>(tests) <span class="tk-k">AS</span> tests,
+        <span class="tk-f">SUM</span>(d_mbps * tests) / <span class="tk-f">SUM</span>(tests) <span class="tk-k">AS</span> mean_mbps
+    <span class="tk-k">FROM</span>
+        tiles
+    <span class="tk-k">GROUP BY ALL</span>
+),
+
+q1_vs_q4 <span class="tk-k">AS</span> (
+    <span class="tk-p">-- Q1 next to Q4, plus the thinnest quarter's test count</span>
+    <span class="tk-k">SELECT</span>
+        county,
+        <span class="tk-f">MAX</span>(mean_mbps) <span class="tk-k">FILTER</span> (<span class="tk-k">WHERE</span> quarter = <span class="tk-n">1</span>) <span class="tk-k">AS</span> q1_mbps,
+        <span class="tk-f">MAX</span>(mean_mbps) <span class="tk-k">FILTER</span> (<span class="tk-k">WHERE</span> quarter = <span class="tk-n">4</span>) <span class="tk-k">AS</span> q4_mbps,
+        <span class="tk-f">MIN</span>(tests) <span class="tk-k">AS</span> min_tests
+    <span class="tk-k">FROM</span>
+        county_quarter
+    <span class="tk-k">GROUP BY ALL</span>
+)
+
+<span class="tk-k">SELECT</span>
+    county,
+    <span class="tk-f">ROUND</span>(q1_mbps) <span class="tk-k">AS</span> q1_mbps,
+    <span class="tk-f">ROUND</span>(q4_mbps) <span class="tk-k">AS</span> q4_mbps,
+    <span class="tk-f">ROUND</span>(<span class="tk-n">100</span> * (q4_mbps / q1_mbps - <span class="tk-n">1</span>), <span class="tk-n">1</span>) <span class="tk-k">AS</span> pct_change
+<span class="tk-k">FROM</span>
+    q1_vs_q4
+<span class="tk-k">WHERE</span>
+    min_tests &gt;= <span class="tk-n">1000</span>
+<span class="tk-k">ORDER BY</span>
+    pct_change <span class="tk-k">DESC</span>
+<span class="tk-k">LIMIT</span> <span class="tk-n">5</span>
+;</code></pre>
+<table class="data">
+<thead><tr><th>County</th><th>Q1 2025 mean, Mbps</th><th>Q4 2025 mean, Mbps</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td>Milam</td><td>149</td><td>295</td><td>+98%</td></tr>
+<tr><td>Houston</td><td>160</td><td>273</td><td>+70%</td></tr>
+<tr><td>Lee</td><td>112</td><td>190</td><td>+69%</td></tr>
+<tr><td>Cooke</td><td>185</td><td>277</td><td>+49%</td></tr>
+<tr><td>Sabine</td><td>154</td><td>227</td><td>+48%</td></tr>
+</tbody>
+</table>
+<p>Milam County nearly doubled in a year? I didn't believe it, so I ran step 2 on its own for Milam and added a median. The test-weighted mean went from 149 to 295 Mbps. The median tile went from 89 to 96. So a slice of Milam got a lot faster and pulled the mean up, while the typical tile barely moved. That's the <a href="averages-lie.html">Averages lie</a> note all over again, and I only caught it because the steps had names I could poke at.</p>
+
+<h2>Run it yourself</h2>
+<p>All five queries live in <a href="https://github.com/davenmook/data-stories/tree/main/sql-patterns"><code>sql-patterns/patterns.sql</code></a> in the data-stories repo. <code>python3 run.py</code> runs them in order and prints each result. You'll need the 2025 fixed tiles (<code>tools/fetch_ookla.py 2025</code>) and the tile-to-county table from <code>sql-or-python/prep.py</code>.</p>
+<p>A few things the open data can't tell you. Tiles hold average speeds and test counts, so every "per test" number here is a test-weighted average of tile averages. There's no split by provider or technology. And a test is one moment on one device, so one slow test doesn't mean someone has bad internet.</p>
+
+<p class="source"><small>Speedtest&reg; by Ookla&reg; Global Fixed and Mobile Network Performance Maps, fixed tiles, from <a href="https://www.ookla.com/ookla-for-good/open-data">Ookla for Good</a> via the <a href="https://registry.opendata.aws/speedtest-global-performance">AWS Open Data Registry</a>. Based on analysis by Ookla of Speedtest Intelligence&reg; data for Q1 to Q4 2025. Provided by Ookla and accessed 13 October 2026. Ookla trademarks used under license and reprinted with permission. Data licensed CC BY-NC-SA 4.0. County boundaries: US Census Bureau. Queries run in <a href="https://duckdb.org">DuckDB</a>.</small></p>
+</article>
+
+<aside class="follow" aria-label="Follow along">
+<div class="follow-copy">
+<span class="eyebrow">Want the next one?</span>
+<p>I share every new note and data story on LinkedIn, usually on Wednesdays. Follow along there and the next one finds you.</p>
+</div>
+<a class="btn btn-primary follow-btn" href="https://www.linkedin.com/in/noeldave" target="_blank" rel="me noopener">Follow on LinkedIn<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h7v7M13 3L4 12"/></svg></a>
+</aside>
+
+<section class="next" aria-label="More notes">
+<a class="talk" href="sql-or-python.html"><span class="meta">NEXT · SQL AND PYTHON</span><span class="title">SQL or Python? Yes.</span><p>Same question, two languages, one answer. Plus a county where one tile out-tests everybody.</p></a>
+<a class="talk" href="which-samples.html"><span class="meta">NEXT · DATA QUALITY</span><span class="title">Which samples are you looking at?</span><p>5% of the homes ran 59% of the tests. Here's why one home, one vote fixes it.</p></a>
+</section>
+</main>
+<footer class="footer" id="contact">
+<div class="wrap footer-top">
+<div class="footer-cta">
+<strong>Want to talk data, networks, mentoring, or customer success? Say hi.</strong>
+<span class="email">davidnmook@gmail.com</span>
+<small>I'll probably overthink my reply.</small>
+</div>
+<div class="footer-links">
+<a href="https://www.linkedin.com/in/noeldave">LinkedIn</a>
+<a href="https://github.com/davenmook">GitHub</a>
+<a href="../about.html">About</a>
+<a href="#top">Back to top</a>
+</div>
+</div>
+<div class="wrap footer-fine">© 2026 Dave Noel · Views are my own · Data from public sources, credited on every chart.</div>
+</footer>
+<script src="../assets/js/theme.js?v=20261014t" defer></script>
+</body>
+</html>
